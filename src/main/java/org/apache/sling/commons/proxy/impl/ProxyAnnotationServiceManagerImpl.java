@@ -18,6 +18,7 @@
  */
 package org.apache.sling.commons.proxy.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,12 @@ import org.apache.sling.commons.proxy.ProxyAnnotationServiceManager;
 		@Property(name = "service.description", value = "Apache Sling Proxy Annotation Service Manager Service") })
 public class ProxyAnnotationServiceManagerImpl implements
 		ProxyAnnotationServiceManager {
-	private Map<Class<?>, ProxyAnnotationService> annocationServiceCache = new HashMap<Class<?>, ProxyAnnotationService>();
+
+	/**
+	 * Cache of the registered Proxy Annotation Service instances.
+	 */
+	private Map<Class<?>, ProxyAnnotationService> annotationServiceCache = Collections
+			.synchronizedMap(new HashMap<Class<?>, ProxyAnnotationService>());
 
 	/*
 	 * (non-Javadoc)
@@ -48,8 +54,9 @@ public class ProxyAnnotationServiceManagerImpl implements
 	 * @see org.apache.sling.commons.proxy.ProxyAnnotationServiceManager#
 	 * getProxyAnnotationService(java.lang.Class)
 	 */
-	public ProxyAnnotationService getProxyAnnotationService(final Class<?> annotation) {
-		return this. annocationServiceCache.get(annotation);
+	public ProxyAnnotationService getProxyAnnotationService(
+			final Class<?> annotation) {
+		return this.annotationServiceCache.get(annotation);
 	}
 
 	/*
@@ -61,7 +68,7 @@ public class ProxyAnnotationServiceManagerImpl implements
 	 */
 	public void registerProxyAnnotationService(final Class<?> annotationClass,
 			final ProxyAnnotationService service) {
-		this.annocationServiceCache.put(annotationClass, service);
+		this.annotationServiceCache.put(annotationClass, service);
 	}
 
 	/*
@@ -71,6 +78,6 @@ public class ProxyAnnotationServiceManagerImpl implements
 	 * unregisterProxyAnnotationService(java.lang.Class)
 	 */
 	public void unregisterProxyAnnotationService(final Class<?> annotationClass) {
-		this.annocationServiceCache.remove(annotationClass);
+		this.annotationServiceCache.remove(annotationClass);
 	}
 }

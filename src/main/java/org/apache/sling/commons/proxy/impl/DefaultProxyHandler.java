@@ -87,7 +87,7 @@ public class DefaultProxyHandler implements ProxyAnnotationService {
 	 *            the name of the property to attempt to retrieve
 	 * @return
 	 */
-	protected String findMatchingKey(ValueMap properties, String name) {
+	public static String findMatchingKey(ValueMap properties, String name) {
 		log.trace("findMatchingKey");
 		if (properties.containsKey(name)) {
 			return name;
