@@ -55,6 +55,13 @@ public interface SimpleSlingProxy extends SlingProxy {
 	public Boolean isActive();
 
 	/**
+	 * Gets the active attribute as a string.
+	 * 
+	 * @return
+	 */
+	public String active();
+
+	/**
 	 * Attempts to retrieve a property which does not exist.
 	 * 
 	 * @return

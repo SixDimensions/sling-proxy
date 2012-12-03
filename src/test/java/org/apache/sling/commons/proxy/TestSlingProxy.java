@@ -107,6 +107,7 @@ public class TestSlingProxy {
 		assertEquals(CONTENT_RESOURCE_TYPE,
 				simpleSlingProxy.getSlingResourceType());
 		assertEquals(false, simpleSlingProxy.isActive());
+		assertEquals("false", simpleSlingProxy.active());
 		assertEquals(TITLE, simpleSlingProxy.jcrTitle());
 		assertEquals(null, simpleSlingProxy.getNonExistentProperty());
 
