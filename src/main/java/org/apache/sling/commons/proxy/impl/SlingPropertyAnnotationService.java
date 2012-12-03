@@ -26,6 +26,7 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.commons.proxy.ProxyAnnotationService;
 import org.apache.sling.commons.proxy.ProxyAnnotationServiceManager;
@@ -100,12 +101,13 @@ public class SlingPropertyAnnotationService implements ProxyAnnotationService {
 		if (slingProperty.path() != null) {
 			String path = slingProperty.path();
 			Resource pathResource = null;
+			ResourceResolver resolver = resource.getResourceResolver();
 			if (path.startsWith("/")) {
 				log.debug("Retrieving properties from absolute path: {}", path);
-				pathResource = resource.getResourceResolver().getResource(path);
+				pathResource = resolver.getResource(path);
 			} else {
 				log.debug("Retrieving properties from relative path: {}", path);
-				pathResource = resource.getChild(path);
+				pathResource = resolver.getResource(resource, path);
 			}
 
 			if (pathResource != null) {
