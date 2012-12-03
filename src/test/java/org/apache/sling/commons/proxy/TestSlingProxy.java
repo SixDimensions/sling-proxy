@@ -8,8 +8,8 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
 import org.apache.sling.commons.proxy.annotations.SlingProperty;
 import org.apache.sling.commons.proxy.impl.ProxyAdapterFactory;
-import org.apache.sling.commons.proxy.impl.ProxyAnnotationServiceManagerImpl;
-import org.apache.sling.commons.proxy.impl.SlingPropertyAnnotationService;
+import org.apache.sling.commons.proxy.impl.ProxyAnnotationHandlerManagerImpl;
+import org.apache.sling.commons.proxy.impl.SlingPropertyAnnotationHandler;
 import org.apache.sling.commons.testing.sling.MockResource;
 import org.apache.sling.commons.testing.sling.MockResourceResolver;
 import org.junit.Before;
@@ -31,9 +31,9 @@ public class TestSlingProxy {
 		log.info("init");
 
 		log.info("Initializing services");
-		ProxyAnnotationServiceManager proxyAnnotationServiceManager = new ProxyAnnotationServiceManagerImpl();
-		proxyAnnotationServiceManager.registerProxyAnnotationService(
-				SlingProperty.class, new SlingPropertyAnnotationService());
+		ProxyAnnotationHandlerManager proxyAnnotationServiceManager = new ProxyAnnotationHandlerManagerImpl();
+		proxyAnnotationServiceManager.registerProxyAnnotationHandler(
+				SlingProperty.class, new SlingPropertyAnnotationHandler());
 
 		final ProxyAdapterFactory proxyAdaptorFactory = new ProxyAdapterFactory();
 

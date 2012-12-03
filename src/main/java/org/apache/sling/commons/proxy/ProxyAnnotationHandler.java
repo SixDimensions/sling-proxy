@@ -24,17 +24,17 @@ import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.sling.api.resource.Resource;
 
 /**
- * Interfaces for Services which will be called when a matching annotation is
+ * Interfaces for classes which will be called when a matching annotation is
  * found on a Sling Proxy interface. The invoke method should handle the method
  * invocation on the proxy.
  * 
  * @author dklco
  */
-public interface ProxyAnnotationService {
+public interface ProxyAnnotationHandler {
 
 	/**
 	 * Handle the invocation of a method annotated with the correct annotation
-	 * for this Proxy Annotation Service. Processes a method invocation on a
+	 * for this Proxy Annotation Handler. Processes a method invocation on a
 	 * proxy instance and returns the result.
 	 * 
 	 * @param resource

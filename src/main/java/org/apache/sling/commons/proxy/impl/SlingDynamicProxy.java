@@ -23,8 +23,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.commons.proxy.ProxyAnnotationService;
-import org.apache.sling.commons.proxy.ProxyAnnotationServiceManager;
+import org.apache.sling.commons.proxy.ProxyAnnotationHandler;
+import org.apache.sling.commons.proxy.ProxyAnnotationHandlerManager;
 import org.apache.sling.commons.proxy.SlingProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +45,14 @@ public class SlingDynamicProxy implements InvocationHandler {
 	private final Resource resource;
 
 	/**
-	 * The ProxyAnnotationServiceManager, used to hold references to the Proxy
-	 * Annotation Services.
+	 * The ProxyAnnotationHandlerManager, used to hold references to the Proxy
+	 * Annotation Handlers.
 	 */
-	private final ProxyAnnotationServiceManager proxyAnnotationServiceManager;
+	private final ProxyAnnotationHandlerManager proxyAnnotationHandlerManager;
+
+	/**
+	 * The SLF4J Logger
+	 */
 	private static final Logger log = LoggerFactory
 			.getLogger(SlingDynamicProxy.class);
 
@@ -57,13 +61,13 @@ public class SlingDynamicProxy implements InvocationHandler {
 	 * 
 	 * @param resource
 	 *            this resource will be used to back the proxy
-	 * @param proxyAnnotationServiceManager
-	 *            the proxy annotations service manager reference
+	 * @param proxyAnnotationHandlerManager
+	 *            the proxy annotations handler manager reference
 	 */
 	public SlingDynamicProxy(final Resource resource,
-			final ProxyAnnotationServiceManager proxyAnnotationServiceManager) {
+			final ProxyAnnotationHandlerManager proxyAnnotationHandlerManager) {
 		this.resource = resource;
-		this.proxyAnnotationServiceManager = proxyAnnotationServiceManager;
+		this.proxyAnnotationHandlerManager = proxyAnnotationHandlerManager;
 	}
 
 	/*
@@ -76,20 +80,21 @@ public class SlingDynamicProxy implements InvocationHandler {
 			throws Throwable {
 		log.trace("invoke");
 
-		ProxyAnnotationService proxyAnnotationService = new DefaultProxyHandler();
+		ProxyAnnotationHandler proxyAnnotationHandler = new DefaultProxyHandler();
 		for (Annotation annotation : m.getAnnotations()) {
-			if (proxyAnnotationServiceManager
-					.getProxyAnnotationService(annotation.annotationType()) != null) {
-				proxyAnnotationService = proxyAnnotationServiceManager
-						.getProxyAnnotationService(annotation.annotationType());
+			if (proxyAnnotationHandlerManager
+					.getProxyAnnotationHandler(annotation.annotationType()) != null) {
+				proxyAnnotationHandler = proxyAnnotationHandlerManager
+						.getProxyAnnotationHandler(annotation.annotationType());
 				log.debug(
-						"Found Proxy Annotation Service {} for annotation {}",
-						proxyAnnotationService.getClass().getName(), annotation.annotationType().getSimpleName());
+						"Found Proxy Annotation Handler {} for annotation {}",
+						proxyAnnotationHandler.getClass().getName(), annotation
+								.annotationType().getSimpleName());
 				break;
 			}
 		}
 
-		return proxyAnnotationService.invoke(resource,
+		return proxyAnnotationHandler.invoke(resource,
 				SlingProxy.class.cast(proxy), m, args);
 	}
 }

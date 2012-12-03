@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.commons.proxy.ProxyAnnotationService;
+import org.apache.sling.commons.proxy.ProxyAnnotationHandler;
 import org.apache.sling.commons.proxy.SlingProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +34,16 @@ import org.slf4j.LoggerFactory;
  * 
  * @author dklco
  */
-public class DefaultProxyHandler implements ProxyAnnotationService {
+public class DefaultProxyHandler implements ProxyAnnotationHandler {
 
+	/**
+	 * Constant for the name of the getBackingResource method.
+	 */
 	private static final String GET_RESOURCE_METHOD_NAME = "getBackingResource";
+	
+	/**
+	 * SLF4J Logger
+	 */
 	private static final Logger log = LoggerFactory
 			.getLogger(DefaultProxyHandler.class);
 
@@ -44,7 +51,7 @@ public class DefaultProxyHandler implements ProxyAnnotationService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.apache.sling.commons.proxy.ProxyAnnotationService#invoke(org.apache
+	 * org.apache.sling.commons.proxy.ProxyAnnotationHandler#invoke(org.apache
 	 * .sling.api.resource.Resource, org.apache.sling.commons.proxy.SlingProxy,
 	 * java.lang.reflect.Method, java.lang.Object[])
 	 */

@@ -28,7 +28,7 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
-import org.apache.sling.commons.proxy.ProxyAnnotationServiceManager;
+import org.apache.sling.commons.proxy.ProxyAnnotationHandlerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,7 @@ public class ProxyAdapterFactory implements AdapterFactory {
 	 * Reference to the Sling Proxy Annotation Service Manager.
 	 */
 	@Reference
-	private ProxyAnnotationServiceManager proxyAnnotationServiceManager;
+	private ProxyAnnotationHandlerManager proxyAnnotationServiceManager;
 
 	/*
 	 * (non-Javadoc)

@@ -28,8 +28,8 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.commons.proxy.ProxyAnnotationService;
-import org.apache.sling.commons.proxy.ProxyAnnotationServiceManager;
+import org.apache.sling.commons.proxy.ProxyAnnotationHandler;
+import org.apache.sling.commons.proxy.ProxyAnnotationHandlerManager;
 import org.apache.sling.commons.proxy.SlingProxy;
 import org.apache.sling.commons.proxy.annotations.SlingProperty;
 import org.osgi.service.component.ComponentContext;
@@ -41,25 +41,25 @@ import org.slf4j.LoggerFactory;
  * 
  * @author dklco
  */
-@Component(label = "Proxy Annotation Service Manager", name = "org.apache.sling.commons.proxy.impl.SlingPropertyAnnotationService", metatype = true, immediate = true)
-@Service(value = ProxyAnnotationService.class)
+@Component(label = "SlingProperty Annotation Service", name = "org.apache.sling.commons.proxy.impl.SlingPropertyAnnotationHandler", metatype = true, immediate = true)
+@Service(value = ProxyAnnotationHandler.class)
 @Properties(value = {
 		@Property(name = "service.vendor", value = "The Apache Software Foundation"),
-		@Property(name = "service.description", value = "Apache Sling SlingProperty Annotation Service") })
-public class SlingPropertyAnnotationService implements ProxyAnnotationService {
+		@Property(name = "service.description", value = "Apache Sling SlingProperty Annotation Handler") })
+public class SlingPropertyAnnotationHandler implements ProxyAnnotationHandler {
 
 	/**
-	 * Reference to the ProxyAnnotationServiceManager, used to register and
+	 * Reference to the ProxyAnnotationHandlerManager, used to register and
 	 * unregister this service.
 	 */
 	@Reference
-	private ProxyAnnotationServiceManager proxyAnnotationServiceManager;
+	private ProxyAnnotationHandlerManager proxyAnnotationHandlerManager;
 
 	/**
 	 * The SLF4J Logger.
 	 */
 	private static final Logger log = LoggerFactory
-			.getLogger(SlingPropertyAnnotationService.class);
+			.getLogger(SlingPropertyAnnotationHandler.class);
 
 	/**
 	 * Called by OSGi when this Service is activated.
@@ -68,10 +68,18 @@ public class SlingPropertyAnnotationService implements ProxyAnnotationService {
 	 *            the service context
 	 */
 	protected void activate(final ComponentContext context) {
-		proxyAnnotationServiceManager.registerProxyAnnotationService(
+		proxyAnnotationHandlerManager.registerProxyAnnotationHandler(
 				SlingProperty.class, this);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.sling.commons.proxy.ProxyAnnotationHandler#invoke(org.apache
+	 * .sling.api.resource.Resource, org.apache.sling.commons.proxy.SlingProxy,
+	 * java.lang.reflect.Method, java.lang.Object[])
+	 */
 	public Object invoke(Resource resource, SlingProxy proxy, Method m,
 			Object[] args) throws Throwable {
 		log.trace("invoke");
@@ -147,8 +155,8 @@ public class SlingPropertyAnnotationService implements ProxyAnnotationService {
 	 *            the service context
 	 */
 	protected void deactivate(final ComponentContext context) {
-		proxyAnnotationServiceManager
-				.unregisterProxyAnnotationService(SlingProperty.class);
+		proxyAnnotationHandlerManager
+				.unregisterProxyAnnotationHandler(SlingProperty.class);
 	}
 
 }

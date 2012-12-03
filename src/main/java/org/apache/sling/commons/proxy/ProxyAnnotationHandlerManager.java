@@ -19,46 +19,46 @@
 package org.apache.sling.commons.proxy;
 
 /**
- * The ProxyAnnotationServiceManager manages the available
- * ProxyAnnotationService instances.
+ * The ProxyAnnotationHandlerManager manages the available
+ * ProxyAnnotationHandler instances.
  * 
  * @author dklco
  */
-public interface ProxyAnnotationServiceManager {
+public interface ProxyAnnotationHandlerManager {
 
 	/**
-	 * Get the ProxyAnnotationService instance associated with the specified
+	 * Get the ProxyAnnotationHandler instance associated with the specified
 	 * annotation class.
 	 * 
 	 * @param annotation
 	 *            the Java class for the annotation associated with the
-	 *            ProxyAnnotationService
-	 * @return the ProxyAnnotationService associated with the annotation class
+	 *            ProxyAnnotationHandler
+	 * @return the ProxyAnnotationHandler associated with the annotation class
 	 *         or null
 	 */
-	public ProxyAnnotationService getProxyAnnotationService(Class<?> annotation);
+	public ProxyAnnotationHandler getProxyAnnotationHandler(Class<?> annotationClass);
 
 	/**
-	 * Registers a new ProxyAnnotationService instance associated with the
+	 * Registers a new ProxyAnnotationHandler instance associated with the
 	 * specified annotation class. Will replace any existing
-	 * ProxyAnnotationServices for the specified annotation class.
+	 * ProxyAnnotationHandler for the specified annotation class.
 	 * 
 	 * @param annotationClass
 	 *            the Java class for the annotation to associate with the
-	 *            ProxyAnnotationService
-	 * @param service
-	 *            the ProxyAnnotationService instance
+	 *            ProxyAnnotationHandler
+	 * @param handler
+	 *            the ProxyAnnotationHandler instance
 	 */
-	public void registerProxyAnnotationService(Class<?> annotationClass,
-			ProxyAnnotationService service);
+	public void registerProxyAnnotationHandler(Class<?> annotationClass,
+			ProxyAnnotationHandler handler);
 
 	/**
-	 * Unregisters a new ProxyAnnotationService instance associated with the
+	 * Unregisters a new ProxyAnnotationHandler instance associated with the
 	 * specified annotation class.
 	 * 
 	 * @param annotationClass
 	 *            the Java class for the annotation associated with the
-	 *            ProxyAnnotationService to remove
+	 *            ProxyAnnotationHandler to remove
 	 */
-	public void unregisterProxyAnnotationService(Class<?> annotationClass);
+	public void unregisterProxyAnnotationHandler(Class<?> annotationClass);
 }
