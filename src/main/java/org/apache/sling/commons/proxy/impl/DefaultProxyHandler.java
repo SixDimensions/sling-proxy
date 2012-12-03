@@ -53,7 +53,7 @@ public class DefaultProxyHandler implements ProxyAnnotationService {
 		log.trace("invoke");
 
 		String methodName = m.getName();
-		log.debug("Handling method: {}" + methodName);
+		log.debug("Handling method: {}", methodName);
 
 		ValueMap properties = resource.adaptTo(ValueMap.class);
 

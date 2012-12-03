@@ -76,7 +76,7 @@ public class SlingPropertyAnnotationService implements ProxyAnnotationService {
 		log.trace("invoke");
 
 		String methodName = m.getName();
-		log.debug("Handling method: {}" + methodName);
+		log.debug("Handling method: {}", methodName);
 
 		return retrieveProperty(resource, m);
 	}

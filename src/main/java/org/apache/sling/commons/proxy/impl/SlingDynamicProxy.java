@@ -79,13 +79,12 @@ public class SlingDynamicProxy implements InvocationHandler {
 		ProxyAnnotationService proxyAnnotationService = new DefaultProxyHandler();
 		for (Annotation annotation : m.getAnnotations()) {
 			if (proxyAnnotationServiceManager
-					.getProxyAnnotationService(annotation.getClass()) != null) {
+					.getProxyAnnotationService(annotation.annotationType()) != null) {
 				proxyAnnotationService = proxyAnnotationServiceManager
-						.getProxyAnnotationService(annotation.getClass());
+						.getProxyAnnotationService(annotation.annotationType());
 				log.debug(
 						"Found Proxy Annotation Service {} for annotation {}",
-						proxyAnnotationService.getClass().getName(), annotation
-								.getClass().getName());
+						proxyAnnotationService.getClass().getName(), annotation.annotationType().getSimpleName());
 				break;
 			}
 		}
