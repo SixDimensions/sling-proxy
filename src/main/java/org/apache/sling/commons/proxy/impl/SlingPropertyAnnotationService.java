@@ -37,14 +37,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Service for handling Proxy calls for the SlingProperty annotation.
  * 
  * @author dklco
  */
-@Component(label = "Proxy Annotation Service Manager", name = "org.apache.sling.commons.proxy.impl.ProxyAnnotationServiceManagerImpl", metatype = true, immediate = true)
-@Service(value = ProxyAnnotationServiceManager.class)
+@Component(label = "Proxy Annotation Service Manager", name = "org.apache.sling.commons.proxy.impl.SlingPropertyAnnotationService", metatype = true, immediate = true)
+@Service(value = ProxyAnnotationService.class)
 @Properties(value = {
 		@Property(name = "service.vendor", value = "The Apache Software Foundation"),
-		@Property(name = "service.description", value = "Apache Sling Proxy Annotation Service Manager Service") })
+		@Property(name = "service.description", value = "Apache Sling SlingProperty Annotation Service") })
 public class SlingPropertyAnnotationService implements ProxyAnnotationService {
 
 	/**
