@@ -28,6 +28,7 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
+import org.apache.sling.commons.proxy.ProxyAnnotationServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,16 +50,22 @@ import org.slf4j.LoggerFactory;
 public class ProxyAdapterFactory implements AdapterFactory {
 
 	/**
+	 * The SLF4J Logger.
+	 */
+	private static final Logger log = LoggerFactory
+			.getLogger(ProxyAdapterFactory.class);
+
+	/**
 	 * Reference to the Sling Dynamic ClassLoader Manager.
 	 */
 	@Reference
 	private DynamicClassLoaderManager classLoaderManager;
 
 	/**
-	 * The SLF4J Logger.
+	 * Reference to the Sling Proxy Annotation Service Manager.
 	 */
-	private static final Logger log = LoggerFactory
-			.getLogger(ProxyAdapterFactory.class);
+	@Reference
+	private ProxyAnnotationServiceManager proxyAnnotationServiceManager;
 
 	/*
 	 * (non-Javadoc)
@@ -79,7 +86,8 @@ public class ProxyAdapterFactory implements AdapterFactory {
 
 			log.warn("Creating Dynamic Proxy of type: {}", type.getName());
 			return type.cast(Proxy.newProxyInstance(classLoader,
-					new Class[] { type }, new SlingDynamicProxy(resource)));
+					new Class[] { type }, new SlingDynamicProxy(resource,
+							proxyAnnotationServiceManager)));
 		} else {
 			log.warn("Unable to adapt object of type: {}", adaptable.getClass()
 					.getName());
