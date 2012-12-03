@@ -67,8 +67,10 @@ public class DefaultProxyHandler implements ProxyAnnotationService {
 			String name = methodName.substring(methodName.indexOf("is") + 2);
 			return properties.get(findMatchingKey(properties, name),
 					m.getReturnType());
+		} else {
+			return properties.get(findMatchingKey(properties, methodName),
+					m.getReturnType());
 		}
-		return null;
 	}
 
 	/**

@@ -98,7 +98,7 @@ public class SlingPropertyAnnotationService implements ProxyAnnotationService {
 		SlingProperty slingProperty = m.getAnnotation(SlingProperty.class);
 
 		ValueMap properties = null;
-		if (slingProperty.path() != null) {
+		if (slingProperty.path().trim().length() != 0) {
 			String path = slingProperty.path();
 			Resource pathResource = null;
 			ResourceResolver resolver = resource.getResourceResolver();
@@ -121,7 +121,7 @@ public class SlingPropertyAnnotationService implements ProxyAnnotationService {
 
 		if (properties != null) {
 			String name = null;
-			if (slingProperty.name() != null) {
+			if (slingProperty.name().trim().length() != 0) {
 				name = slingProperty.name();
 			} else if (methodName.startsWith("get")) {
 				name = DefaultProxyHandler.findMatchingKey(properties,
@@ -129,6 +129,9 @@ public class SlingPropertyAnnotationService implements ProxyAnnotationService {
 			} else if (methodName.startsWith("is")) {
 				name = DefaultProxyHandler.findMatchingKey(properties,
 						methodName.substring(methodName.indexOf("is") + 2));
+			} else {
+				name = DefaultProxyHandler.findMatchingKey(properties,
+						methodName);
 			}
 			return properties.get(name, m.getReturnType());
 		}

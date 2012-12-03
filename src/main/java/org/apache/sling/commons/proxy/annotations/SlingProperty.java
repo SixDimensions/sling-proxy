@@ -38,7 +38,7 @@ public @interface SlingProperty {
 	 * 
 	 * @return the name of the property to retrieve
 	 */
-	String name();
+	String name() default "";
 
 	/**
 	 * The path to the property to retrieve, if it beings with / it will be
@@ -47,5 +47,5 @@ public @interface SlingProperty {
 	 * 
 	 * @return the path to the property to retrieve
 	 */
-	String path();
+	String path() default "";
 }
