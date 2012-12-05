@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1354733587506
+Build-Jdk: 1.6.0_30
+Built-By: Six Dimensions
+Bundle-Category: sling
+Bundle-Description: Remote Tests for the Java Dynamic Proxy implementati
+ on for Apache Sling
+Bundle-DocURL: http://sling.apache.org
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache Sling Proxy Remote Test
+Bundle-SymbolicName: org.apache.sling.commons.proxy.remote-test
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 0.0.1.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Export-Package: org.apache.sling.commons.proxy.test;uses:="org.apache.sl
+ ing.commons.proxy.api,org.apache.sling.commons.proxy.api.annotations,or
+ g.junit.runner,org.apache.sling.junit.annotations,org.slf4j,org.junit,o
+ rg.apache.sling.api.resource";version="0.0.1.SNAPSHOT"
+Import-Package: org.apache.sling.api.resource;version="[2.1,3)",org.apac
+ he.sling.commons.proxy.api;version="[0.0,1)",org.apache.sling.commons.p
+ roxy.api.annotations;version="[0.0,1)",org.apache.sling.junit.annotatio
+ ns;version="[1.0,2)",org.junit;version="[4.8,5)",org.junit.runner;versi
+ on="[4.8,5)",org.slf4j;version="[1.5,2)"
+Sling-Test-Regexp: .*Test
+Tool: Bnd-1.50.0
