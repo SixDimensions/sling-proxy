@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy.impl;
+package org.apache.sling.commons.proxy.core.impl;
 
 import java.lang.reflect.Method;
 
