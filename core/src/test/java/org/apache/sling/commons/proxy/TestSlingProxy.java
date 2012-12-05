@@ -9,9 +9,11 @@ import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
 import org.apache.sling.commons.proxy.api.AbstractProxyAdapterFactory;
 import org.apache.sling.commons.proxy.api.ProxyAnnotationHandlerManager;
 import org.apache.sling.commons.proxy.api.SlingProxy;
+import org.apache.sling.commons.proxy.api.SlingProxyService;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 import org.apache.sling.commons.proxy.core.impl.ProxyAnnotationHandlerManagerImpl;
 import org.apache.sling.commons.proxy.core.impl.SlingPropertyAnnotationHandler;
+import org.apache.sling.commons.proxy.core.impl.SlingProxyServiceImpl;
 import org.apache.sling.commons.testing.sling.MockResource;
 import org.apache.sling.commons.testing.sling.MockResourceResolver;
 import org.junit.Before;
@@ -40,23 +42,31 @@ public class TestSlingProxy {
 		final AbstractProxyAdapterFactory proxyAdaptorFactory = new AbstractProxyAdapterFactory() {
 		};
 
-		log.info("Injecting proxyAnnotationServiceManager");
-		Field proxyAnnotationServiceManagerField = AbstractProxyAdapterFactory.class
+		SlingProxyService slingProxyService = new SlingProxyServiceImpl();
+
+		log.info("Injecting proxyAnnotationHandlerManager");
+		Field proxyAnnotationServiceManagerField = SlingProxyServiceImpl.class
 				.getDeclaredField("proxyAnnotationServiceManager");
 		proxyAnnotationServiceManagerField.setAccessible(true);
-		proxyAnnotationServiceManagerField.set(proxyAdaptorFactory,
+		proxyAnnotationServiceManagerField.set(slingProxyService,
 				proxyAnnotationServiceManager);
 
 		log.info("Injecting classLoaderManager");
-		Field classLoaderManagerField = AbstractProxyAdapterFactory.class
+		Field classLoaderManagerField = SlingProxyServiceImpl.class
 				.getDeclaredField("classLoaderManager");
 		classLoaderManagerField.setAccessible(true);
-		classLoaderManagerField.set(proxyAdaptorFactory,
+		classLoaderManagerField.set(slingProxyService,
 				new DynamicClassLoaderManager() {
 					public ClassLoader getDynamicClassLoader() {
 						return this.getClass().getClassLoader();
 					}
 				});
+
+		log.info("Injecting Sling Proxy Service");
+		Field slingProxyServiceField = AbstractProxyAdapterFactory.class
+				.getDeclaredField("slingProxyService");
+		slingProxyServiceField.setAccessible(true);
+		slingProxyServiceField.set(proxyAdaptorFactory, slingProxyService);
 
 		log.info("Creating Mock Resources");
 		resolver = new MockResourceResolver();
