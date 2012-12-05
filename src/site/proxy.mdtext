@@ -1,0 +1,7 @@
+Title: Sling Proxy
+
+Sling Proxy allows you to develop interfaces which will be instantiated with properties from the Sling repository at runtime.  Sling Proxy uses the [Java Dynamic Proxies API|http://docs.oracle.com/javase/1.4.2/docs/guide/reflection/proxy.html] to dynamically handle method calls against the interface.  
+
+## Creating a Sling Proxy
+
+To create a Sling Proxy, simply create an interface 
