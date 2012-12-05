@@ -4,4 +4,15 @@ Sling Proxy allows you to develop interfaces which will be instantiated with pro
 
 ## Creating a Sling Proxy
 
-To create a Sling Proxy, simply create an interface 
+To create a Sling Proxy, simply create an interface which extends the SlingProxy interface.  All methods on the interface should either correspond to Resource properties through the Java Bean standards, via the method name, or should use the @SlingProperty annotation to override the path and/or property name.
+
+### Method Names
+
+Sling Proxy by default uses the method name to determine which property to retrieve from the underlying Resource.  //TODO: Document retrieval pattern
+
+## Retrieving a Sling Proxy Instance
+
+
+
+## Making your Sling Proxy adaptable
+
