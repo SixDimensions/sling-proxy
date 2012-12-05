@@ -1,13 +1,12 @@
 package org.apache.sling.commons.proxy;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Field;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
 import org.apache.sling.commons.proxy.annotations.SlingProperty;
-import org.apache.sling.commons.proxy.impl.ProxyAdapterFactory;
 import org.apache.sling.commons.proxy.impl.ProxyAnnotationHandlerManagerImpl;
 import org.apache.sling.commons.proxy.impl.SlingPropertyAnnotationHandler;
 import org.apache.sling.commons.testing.sling.MockResource;
@@ -35,17 +34,18 @@ public class TestSlingProxy {
 		proxyAnnotationServiceManager.registerProxyAnnotationHandler(
 				SlingProperty.class, new SlingPropertyAnnotationHandler());
 
-		final ProxyAdapterFactory proxyAdaptorFactory = new ProxyAdapterFactory();
+		final AbstractProxyAdapterFactory proxyAdaptorFactory = new AbstractProxyAdapterFactory() {
+		};
 
 		log.info("Injecting proxyAnnotationServiceManager");
-		Field proxyAnnotationServiceManagerField = ProxyAdapterFactory.class
+		Field proxyAnnotationServiceManagerField = AbstractProxyAdapterFactory.class
 				.getDeclaredField("proxyAnnotationServiceManager");
 		proxyAnnotationServiceManagerField.setAccessible(true);
 		proxyAnnotationServiceManagerField.set(proxyAdaptorFactory,
 				proxyAnnotationServiceManager);
 
 		log.info("Injecting classLoaderManager");
-		Field classLoaderManagerField = ProxyAdapterFactory.class
+		Field classLoaderManagerField = AbstractProxyAdapterFactory.class
 				.getDeclaredField("classLoaderManager");
 		classLoaderManagerField.setAccessible(true);
 		classLoaderManagerField.set(proxyAdaptorFactory,

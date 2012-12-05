@@ -16,44 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy.impl;
+package org.apache.sling.commons.proxy;
 
 import java.lang.reflect.Proxy;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Properties;
-import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
 import org.apache.sling.commons.proxy.ProxyAnnotationHandlerManager;
+import org.apache.sling.commons.proxy.impl.SlingDynamicProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Adaptor Factory for adapting Sling Resources to Sling Dynamic Proxies. This
- * adaptor utilizes Java Dynamic Proxies to allow adapting resources into
- * objects which proxy calls against interface methods into the resource
- * properties.
+ * Abstract Adaptor Factory for adapting Sling Resources to Sling Dynamic
+ * Proxies. This adaptor utilizes Java Dynamic Proxies to allow adapting
+ * resources into objects which proxy calls against interface methods into the
+ * resource properties.
+ * 
+ * Implementors of the SlingProxy interface should register an AdapterFactory
+ * Service with the services
  * 
  * @author dklco
  */
-@Component(label = "Proxy Adapter Factory", name = "org.apache.sling.commons.proxy.impl.ProxyAdapterFactory", metatype = true, immediate = true)
-@Service(value = AdapterFactory.class)
-@Properties(value = {
-		@Property(name = AdapterFactory.ADAPTABLE_CLASSES, value = "org.apache.sling.api.resource.Resource"),
-		@Property(name = AdapterFactory.ADAPTER_CLASSES, value = "org.apache.sling.commons.proxy.SlingProxy"),
-		@Property(name = "service.vendor", value = "The Apache Software Foundation"),
-		@Property(name = "service.description", value = "Apache Sling Proxy Adapter Factory") })
-public class ProxyAdapterFactory implements AdapterFactory {
+public class AbstractProxyAdapterFactory implements AdapterFactory {
 
 	/**
 	 * The SLF4J Logger.
 	 */
 	private static final Logger log = LoggerFactory
-			.getLogger(ProxyAdapterFactory.class);
+			.getLogger(AbstractProxyAdapterFactory.class);
 
 	/**
 	 * Reference to the Sling Dynamic ClassLoader Manager.
@@ -79,20 +72,34 @@ public class ProxyAdapterFactory implements AdapterFactory {
 		log.trace("getAdapter");
 
 		if (adaptable instanceof Resource) {
-			ClassLoader classLoader = classLoaderManager
-					.getDynamicClassLoader();
-
-			Resource resource = (Resource) adaptable;
-
-			log.warn("Creating Dynamic Proxy of type: {}", type.getName());
-			return type.cast(Proxy.newProxyInstance(classLoader,
-					new Class[] { type }, new SlingDynamicProxy(resource,
-							proxyAnnotationServiceManager)));
+			Resource resource = ((Resource) adaptable);
+			return getProxy(resource, type);
 		} else {
 			log.warn("Unable to adapt object of type: {}", adaptable.getClass()
 					.getName());
 		}
 		return null;
+	}
 
+	/**
+	 * Get the Java Dynamic Proxy instance for the specified adapter type and
+	 * Sling Resource.
+	 * 
+	 * @param resource
+	 *            the resource to back the proxy with
+	 * @param type
+	 *            the proxy type to create
+	 * @return the proxy instance
+	 */
+	protected final <AdapterType> AdapterType getProxy(Resource resource,
+			Class<AdapterType> type) {
+		log.trace("getProxy");
+
+		ClassLoader classLoader = classLoaderManager.getDynamicClassLoader();
+		log.warn("Creating Dynamic Proxy of type: {}", type.getName());
+
+		return type.cast(Proxy.newProxyInstance(classLoader,
+				new Class[] { type }, new SlingDynamicProxy(resource,
+						proxyAnnotationServiceManager)));
 	}
 }
