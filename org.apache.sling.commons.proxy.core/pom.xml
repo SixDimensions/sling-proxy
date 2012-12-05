@@ -28,9 +28,9 @@
 	<description>Java Dynamic Proxy implementation for Apache Sling</description>
 
 	<scm>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/sling/trunk/bundles/commons/proxy</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/sling/trunk/bundles/commons/proxy</developerConnection>
-		<url>http://svn.apache.org/viewvc/sling/trunk/bundles/commons/proxy</url>
+		<connection>scm:svn:http://svn.apache.org/viewvc/sling/trunk/bundles/commons/proxy/core</connection>
+		<developerConnection>scm:svn:http://svn.apache.org/viewvc/sling/trunk/bundles/commons/proxy/core</developerConnection>
+		<url>http://svn.apache.org/viewvc/sling/trunk/bundles/commons/proxy/core</url>
 	</scm>
 
 	<build>

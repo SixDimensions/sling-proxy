@@ -20,17 +20,17 @@
 		<relativePath>../../../../parent/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>org.apache.sling.commons.proxy</artifactId>
+	<artifactId>org.apache.sling.commons.proxy.api</artifactId>
 	<packaging>bundle</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>Apache Sling Proxy</name>
-	<description>Java Dynamic Proxy implementation for Apache Sling</description>
+	<name>Apache Sling Proxy API</name>
+	<description>Java Dynamic Proxy API for Apache Sling</description>
 
 	<scm>
-		<connection>scm:svn:http://svn.apache.org/repos/asf/sling/trunk/bundles/commons/proxy</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/sling/trunk/bundles/commons/proxy</developerConnection>
-		<url>http://svn.apache.org/viewvc/sling/trunk/bundles/commons/proxy</url>
+		<connection>scm:svn:http://svn.apache.org/repos/asf/sling/trunk/bundles/commons/proxy/api</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/sling/trunk/bundles/commons/proxy/api</developerConnection>
+		<url>http://svn.apache.org/viewvc/sling/trunk/bundles/commons/proxy/api</url>
 	</scm>
 
 	<build>
