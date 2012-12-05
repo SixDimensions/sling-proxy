@@ -16,16 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy;
-
-import java.lang.reflect.Proxy;
+package org.apache.sling.commons.proxy.api;
 
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.sling.api.adapter.AdapterFactory;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
-import org.apache.sling.commons.proxy.ProxyAnnotationHandlerManager;
-import org.apache.sling.commons.proxy.impl.SlingDynamicProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,10 +51,16 @@ public class AbstractProxyAdapterFactory implements AdapterFactory {
 	private DynamicClassLoaderManager classLoaderManager;
 
 	/**
-	 * Reference to the Sling Proxy Annotation Service Manager.
+	 * Reference to the Sling Proxy Annotation Handler Manager.
 	 */
 	@Reference
 	private ProxyAnnotationHandlerManager proxyAnnotationServiceManager;
+
+	/**
+	 * Reference to the Sling Proxy Service.
+	 */
+	@Reference
+	private SlingProxyService slingProxyService;
 
 	/*
 	 * (non-Javadoc)
@@ -73,7 +75,7 @@ public class AbstractProxyAdapterFactory implements AdapterFactory {
 
 		if (adaptable instanceof Resource) {
 			Resource resource = ((Resource) adaptable);
-			return getProxy(resource, type);
+			return slingProxyService.getProxy(resource, type);
 		} else {
 			log.warn("Unable to adapt object of type: {}", adaptable.getClass()
 					.getName());
@@ -81,25 +83,4 @@ public class AbstractProxyAdapterFactory implements AdapterFactory {
 		return null;
 	}
 
-	/**
-	 * Get the Java Dynamic Proxy instance for the specified adapter type and
-	 * Sling Resource.
-	 * 
-	 * @param resource
-	 *            the resource to back the proxy with
-	 * @param type
-	 *            the proxy type to create
-	 * @return the proxy instance
-	 */
-	protected final <AdapterType> AdapterType getProxy(Resource resource,
-			Class<AdapterType> type) {
-		log.trace("getProxy");
-
-		ClassLoader classLoader = classLoaderManager.getDynamicClassLoader();
-		log.warn("Creating Dynamic Proxy of type: {}", type.getName());
-
-		return type.cast(Proxy.newProxyInstance(classLoader,
-				new Class[] { type }, new SlingDynamicProxy(resource,
-						proxyAnnotationServiceManager)));
-	}
 }

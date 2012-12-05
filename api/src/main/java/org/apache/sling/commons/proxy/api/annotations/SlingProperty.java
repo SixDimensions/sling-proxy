@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy.annotations;
+package org.apache.sling.commons.proxy.api.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

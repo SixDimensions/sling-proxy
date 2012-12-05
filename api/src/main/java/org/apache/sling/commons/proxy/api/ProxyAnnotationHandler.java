@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy;
+package org.apache.sling.commons.proxy.api;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
