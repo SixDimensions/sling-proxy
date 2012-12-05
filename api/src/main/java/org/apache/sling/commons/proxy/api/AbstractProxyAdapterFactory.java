@@ -45,18 +45,6 @@ public class AbstractProxyAdapterFactory implements AdapterFactory {
 			.getLogger(AbstractProxyAdapterFactory.class);
 
 	/**
-	 * Reference to the Sling Dynamic ClassLoader Manager.
-	 */
-	@Reference
-	private DynamicClassLoaderManager classLoaderManager;
-
-	/**
-	 * Reference to the Sling Proxy Annotation Handler Manager.
-	 */
-	@Reference
-	private ProxyAnnotationHandlerManager proxyAnnotationServiceManager;
-
-	/**
 	 * Reference to the Sling Proxy Service.
 	 */
 	@Reference

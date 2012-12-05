@@ -2,7 +2,13 @@ package org.apache.sling.commons.proxy.api;
 
 import org.apache.sling.api.resource.Resource;
 
+/**
+ * Service for retrieving Sling Dynamic Proxy instances from Sling Resources.
+ * 
+ * @author dklco
+ */
 public interface SlingProxyService {
+
 	/**
 	 * Get the Java Dynamic Proxy instance for the specified adapter type and
 	 * Sling Resource.
