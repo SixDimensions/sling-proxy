@@ -68,8 +68,10 @@ public class SlingPropertyAnnotationHandler implements ProxyAnnotationHandler {
 	 *            the service context
 	 */
 	protected void activate(final ComponentContext context) {
+		log.info("activate");
 		proxyAnnotationHandlerManager.registerProxyAnnotationHandler(
 				SlingProperty.class, this);
+		log.info("Activation successful");
 	}
 
 	/*
@@ -155,8 +157,10 @@ public class SlingPropertyAnnotationHandler implements ProxyAnnotationHandler {
 	 *            the service context
 	 */
 	protected void deactivate(final ComponentContext context) {
+		log.info("deactivate");
 		proxyAnnotationHandlerManager
 				.unregisterProxyAnnotationHandler(SlingProperty.class);
+		log.info("Deactivation successful");
 	}
 
 }
