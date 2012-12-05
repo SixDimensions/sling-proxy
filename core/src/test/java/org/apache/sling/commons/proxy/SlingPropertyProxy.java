@@ -1,6 +1,7 @@
 package org.apache.sling.commons.proxy;
 
-import org.apache.sling.commons.proxy.annotations.SlingProperty;
+import org.apache.sling.commons.proxy.api.SlingProxy;
+import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 
 public interface SlingPropertyProxy extends SlingProxy {
 

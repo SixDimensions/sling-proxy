@@ -6,7 +6,10 @@ import java.lang.reflect.Field;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
-import org.apache.sling.commons.proxy.annotations.SlingProperty;
+import org.apache.sling.commons.proxy.api.AbstractProxyAdapterFactory;
+import org.apache.sling.commons.proxy.api.ProxyAnnotationHandlerManager;
+import org.apache.sling.commons.proxy.api.SlingProxy;
+import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 import org.apache.sling.commons.proxy.impl.ProxyAnnotationHandlerManagerImpl;
 import org.apache.sling.commons.proxy.impl.SlingPropertyAnnotationHandler;
 import org.apache.sling.commons.testing.sling.MockResource;

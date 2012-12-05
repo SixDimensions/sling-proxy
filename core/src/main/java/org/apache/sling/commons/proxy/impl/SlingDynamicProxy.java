@@ -23,9 +23,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.commons.proxy.ProxyAnnotationHandler;
-import org.apache.sling.commons.proxy.ProxyAnnotationHandlerManager;
-import org.apache.sling.commons.proxy.SlingProxy;
+import org.apache.sling.commons.proxy.api.ProxyAnnotationHandler;
+import org.apache.sling.commons.proxy.api.ProxyAnnotationHandlerManager;
+import org.apache.sling.commons.proxy.api.SlingProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

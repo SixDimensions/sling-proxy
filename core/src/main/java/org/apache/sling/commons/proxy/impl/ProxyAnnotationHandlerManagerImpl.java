@@ -26,8 +26,8 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.sling.commons.proxy.ProxyAnnotationHandler;
-import org.apache.sling.commons.proxy.ProxyAnnotationHandlerManager;
+import org.apache.sling.commons.proxy.api.ProxyAnnotationHandler;
+import org.apache.sling.commons.proxy.api.ProxyAnnotationHandlerManager;
 
 /**
  * Default implementation of the Proxy Annotation Handler Manager.

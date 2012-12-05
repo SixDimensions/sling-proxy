@@ -18,6 +18,8 @@
  */
 package org.apache.sling.commons.proxy;
 
+import org.apache.sling.commons.proxy.api.SlingProxy;
+
 /**
  * A simple proxy interface for testing the SlingProxy API. This proxy interface
  * only utilizes the default property retrieval mechanism.
