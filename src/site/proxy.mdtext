@@ -1,18 +1,46 @@
 Title: Sling Proxy
 
-Sling Proxy allows you to develop interfaces which will be instantiated with properties from the Sling repository at runtime.  Sling Proxy uses the [Java Dynamic Proxies API|http://docs.oracle.com/javase/1.4.2/docs/guide/reflection/proxy.html] to dynamically handle method calls against the interface.  
+Sling Proxy allows you to develop interfaces which will be instantiated with properties from the Sling repository at runtime.  Sling Proxy uses the [Java Dynamic Proxies API|http://docs.oracle.com/javase/1.4.2/docs/guide/reflection/proxy.html] to dynamically handle method calls against the interface.  The Sling Proxy API allows you to avoid having to write custom code to handle the mapping of Sling properties to Java fields allowing you to spend less time on boilerplate code and more on your application.  
 
 ## Creating a Sling Proxy
 
 To create a Sling Proxy, simply create an interface which extends the SlingProxy interface.  All methods on the interface should either correspond to Resource properties through the Java Bean standards, via the method name, or should use the @SlingProperty annotation to override the path and/or property name.
 
-### Method Names
+### Method Name Mapping
 
-Sling Proxy by default uses the method name to determine which property to retrieve from the underlying Resource.  //TODO: Document retrieval pattern
+Sling Proxy, by default uses the method name to determine which property to retrieve from the underlying Resource.  In order to map the method name to the corresponding property on the underlying resource, the Proxy service performs the following steps: 
+
+1. If the method name is JavaBean compliant, remove the get or is and convert the first letter to lower case
+2. Check to see if a property exists with the name, if so use that name
+3. Replace the first uppercase character with a colon and the equivalent lower case character
+4. Check to see if a property exists with the name, if so use that name
+
+If no corresponding property can be found, null is returned.  This behavior can be overridden by using the @SlingProperty annotation or by using custom annotations.
 
 ## Retrieving a Sling Proxy Instance
 
+To retrieve a Sling Proxy instance, retrieve a reference to the SlingProxyService.  This service has one method, getProxy, which allows you to retrieve a proxy implemetation:
 
+    SlingProxyService slingProxyService = sling.getService(SlingProxyService.class);
+    MySlingProxy mySlingProxy = slingProxyService.getProxy(resource, MySlingProxy.class);
 
 ## Making your Sling Proxy adaptable
 
+Using the SlingProxyService is convenient, but with a little more code, you can adapt Sling Resources directly to your Proxy interfaces.  To enable adapting resources to your proxy interfaces, create a AdapterFactory service, which extends the AbstractProxyAdapterFactory class.  For example:
+
+    @Component(label = "File Proxy Adapter Factory", name = "org.apache.sling.commons.proxy.test.FileProxyAdapterFactory", metatype = true, immediate = true)
+    @Service(value = AdapterFactory.class)
+    @Properties(value = {
+    		@Property(name = AdapterFactory.ADAPTABLE_CLASSES, value = "org.apache.sling.api.resource.Resource"),
+    		@Property(name = AdapterFactory.ADAPTER_CLASSES, value = "org.apache.sling.commons.proxy.test.FileProxy"),
+    		@Property(name = "service.vendor", value = "The Apache Software Foundation"),
+    		@Property(name = "service.description", value = "File Proxy Adapter Factory") })
+    public class FileProxyAdapterFactory extends AbstractProxyAdapterFactory {
+    
+    }
+
+The AbstractProxyAdapterFactory will automatically handle the default behavior, but you can of course override the default behavior to support more adaptables or perform pre/post-processing.
+
+## Overriding the Proxy Behavior
+
+To override the default behavior of the Sling Proxy, you can create custom Annotations and AnnotationHandlers to execute custom code when interface methods are invoked.   
