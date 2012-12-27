@@ -1,0 +1,465 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+    <!-- ====================================================================== -->
+    <!-- P A R E N T - P R O J E C T - D E S C R I P T I O N -->
+    <!-- ====================================================================== -->
+    <parent>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>sling</artifactId>
+        <version>13</version>
+    </parent>
+    
+    <groupId>org.apache.sling.commons</groupId>
+    <artifactId>proxy-poc</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>proxy-poc</name>
+    <url>http://maven.apache.org</url>
+    <!-- ====================================================================== -->
+    <!-- P R O J E C T - P R O P E R T I E S -->
+    <!-- ====================================================================== -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!--
+        NAME: surefire.useFile
+        
+        Description:  
+        This prints test failures to stdout  
+        -->
+        <surefire.useFile>true</surefire.useFile>
+        
+        <!-- 
+        NAME: bundle.*
+        
+        Description:
+        Default definitions used for packaging the OSGi bundle.   They can be 
+            overridden by any child project.
+            The empty ones are here because the plugin breaks in unpredictable
+            ways if you refer to a variable in the configuration that does
+            not exist. 
+        -->
+        <bundle.sling.resources>/META-INF/tags</bundle.sling.resources>
+        <bundle.resources>/META-INF/tags</bundle.resources>
+        <bundle.export.package>{local-packages};version=${project.version}</bundle.export.package>
+        <bundle.import.package>*</bundle.import.package>
+        <bundle.ignore.package></bundle.ignore.package>
+        <bundle.include.resource>{maven-resources}</bundle.include.resource>
+        <bundle.embed.dependency></bundle.embed.dependency>
+        <bundle.classpath>.,{maven-dependencies}</bundle.classpath>
+        <bundle.private.package></bundle.private.package>
+        <bundle.activator></bundle.activator>
+        <bundle.description></bundle.description>
+        
+        <bundle.packaging>jar</bundle.packaging>
+        
+        
+        <slf4j.version>1.6.4</slf4j.version>
+        <jackrabbit.version>2.4.0</jackrabbit.version>
+        <spi2dav.version>2.4.0</spi2dav.version>
+    </properties>
+    
+    <!-- ====================================================================== -->
+    <!-- S C M - S E T T I N G S  -->
+    <!-- ====================================================================== -->
+    <scm>
+        <connection>scm:git:https://github.sas.com/sas/cq-foundation.git</connection>
+        <developerConnection>scm:git:https://github.sas.com/sas/cq-foundation.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.sas.com/sas/cq-foundation</url>
+    </scm>
+    
+    <!-- ====================================================================== -->
+    <!-- O R G A N I Z A T I O N -->
+    <!-- ====================================================================== -->
+    <organization>
+        <name>Six Dimensions</name>
+        <url>http://6dlabs.com</url>
+    </organization>
+    
+    <!-- ====================================================================== -->
+    <!-- D E V E L O P E R S -->
+    <!-- ====================================================================== -->
+    <developers>
+            <developer>
+            <id>dklco</id>
+            <name>Dan Klco</name>
+            <email>dan.klco@sixdimensions.com</email>
+            <url></url>
+            <organization>Six Dimensions</organization>
+            <organizationUrl>http://6dlabs.com/</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>consultant</role>
+            </roles>
+            <timezone>-5</timezone>
+            <properties>
+                <picUrl></picUrl>
+            </properties>
+        </developer>
+        
+        <developer>
+            <id>mjkelleher</id>
+            <name>Michael J. Kelleher</name>
+            <email>michael.kelleher@sixdimensions.com</email>
+            <url></url>
+            <organization>Six Dimensions</organization>
+            <organizationUrl>http://6dlabs.com/</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>consultant</role>
+            </roles>
+            <timezone>-5</timezone>
+            <properties>
+                <picUrl></picUrl>
+            </properties>
+        </developer>
+    </developers>
+    
+    <!-- ====================================================================== -->
+    <!-- B U I L D - D E F I N I T I O N -->
+    <!-- ====================================================================== -->
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <goals><goal>manifest</goal></goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <supportedProjectTypes>
+                        <supportedProjectType>jar</supportedProjectType>
+                        <supportedProjectType>bundle</supportedProjectType>
+                        <supportedProjectType>pom</supportedProjectType>
+                    </supportedProjectTypes>
+                        
+                    <instructions>
+                        <Export-Package>${bundle.export.package}</Export-Package>
+                        <Private-Package>${bundle.private.package}</Private-Package>
+                        <Import-Package>${bundle.import.package}</Import-Package>
+
+                        <Sling-Bundle-Resources>${bundle.sling.resources}</Sling-Bundle-Resources>
+                        <Bundle-Description>${bundle.description}</Bundle-Description>
+                        <Bundle-Resources>${bundle.resources}</Bundle-Resources>
+                        <Bundle-Activator>${bundle.activator}</Bundle-Activator>
+
+                        <Include-Resource>${bundle.include.resource}</Include-Resource>
+                        <Embed-Dependency>${bundle.embed.dependency}</Embed-Dependency>
+                        <Bundle-ClassPath>${bundle.classpath}</Bundle-ClassPath>
+                    </instructions>
+
+                </configuration>
+
+            </plugin>
+            
+            <plugin>
+                <groupId>org.eclipse.m2e</groupId>
+                <artifactId>lifecycle-mapping</artifactId>
+                <configuration>
+                    <lifecycleMappingMetadata>
+                        <pluginExecutions>
+                        
+                            <pluginExecution>
+                                <pluginExecutionFilter>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-enforcer-plugin</artifactId>
+                                    <versionRange>[1.0,)</versionRange>
+                                    <goals><goal>enforce</goal></goals>
+                                </pluginExecutionFilter>
+                                <action><ignore></ignore></action>
+                            </pluginExecution>
+
+                            <pluginExecution>
+                                <pluginExecutionFilter>
+								    <groupId>org.apache.maven.plugins</groupId>
+								    <artifactId>maven-remote-resources-plugin</artifactId>
+                                    <versionRange>[1.0,)</versionRange>
+                                    <goals><goal>process</goal></goals>
+                                </pluginExecutionFilter>
+                                <action><ignore></ignore></action>
+                            </pluginExecution>
+                            
+                            <pluginExecution>
+                                <pluginExecutionFilter>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>maven-bundle-plugin</artifactId>
+                                    <versionRange>[2.3.7,)</versionRange>
+                                    <goals><goal>manifest</goal></goals>
+                                </pluginExecutionFilter>
+                                <action><ignore></ignore></action>
+                            </pluginExecution>
+                            
+                            <pluginExecution>
+                                <pluginExecutionFilter>
+                                    <groupId>org.apache.felix</groupId>
+                                    <artifactId>maven-scr-plugin</artifactId>
+                                    <versionRange>[1.7.4,)</versionRange>
+                                    <goals><goal>scr</goal></goals>
+                                </pluginExecutionFilter>
+                                <action><ignore></ignore></action>
+                            </pluginExecution>
+                            
+                            <pluginExecution>
+                                <pluginExecutionFilter>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-dependency-plugin</artifactId>
+                                    <versionRange>[2.4,)</versionRange>
+                                    <goals>
+                                        <goal>unpack</goal>
+                                        <goal>copy</goal>
+                                        <goal>copy-dependencies</goal>
+                                    </goals>
+                                </pluginExecutionFilter>
+                                <action><ignore></ignore></action>
+                            </pluginExecution>
+                            
+                            <pluginExecution>
+                                <pluginExecutionFilter>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-antrun-plugin</artifactId>
+                                    <versionRange>[1.3,)</versionRange>
+                                    <goals><goal>run</goal></goals>
+                                </pluginExecutionFilter>
+                                <action><ignore></ignore></action>
+                            </pluginExecution>
+                                                            
+                        </pluginExecutions>
+                        
+                    </lifecycleMappingMetadata>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- ====================================================================== -->
+    <!-- D E P E N D E N C I E S -->
+    <!-- ====================================================================== -->
+    <dependencies>
+    
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.log</artifactId>
+            <version>2.1.3-R1232904</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+	        
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+                
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-api</artifactId>
+            <version>${jackrabbit.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr2dav</artifactId>
+            <version>${jackrabbit.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr2spi</artifactId>
+            <version>${jackrabbit.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr-commons</artifactId>
+            <version>${jackrabbit.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-spi</artifactId>
+            <version>${jackrabbit.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-spi-commons</artifactId>
+            <version>${jackrabbit.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-webdav</artifactId>
+            <version>${jackrabbit.version}</version>
+        </dependency>
+        
+       <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-spi</artifactId>
+            <version>${spi2dav.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+            <version>2.2.4</version><!-- 2.1.0 -->
+            <scope>provided</scope>
+        </dependency>
+        
+		<dependency>
+		    <groupId>org.apache.sling</groupId>
+		    <artifactId>org.apache.sling.jcr.resource</artifactId>
+		    <version>2.1.0</version>
+		    <scope>provided</scope>
+		</dependency>
+		
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.adapter</artifactId>
+            <version>2.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+		<dependency>
+		    <groupId>org.apache.felix</groupId>
+		    <artifactId>org.apache.felix.eventadmin</artifactId>
+		    <version>1.2.8</version>
+		    <scope>provided</scope>
+		</dependency>
+    </dependencies>
+  
+    <!-- ====================================================================== -->
+    <!-- R E P O R T I N G -->
+    <!-- ====================================================================== -->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+    
+    <!-- ====================================================================== -->
+    <!-- R E P O S I T O R I E S -->
+    <!-- ====================================================================== -->
+    <repositories>
+    
+        <repository>
+            <id>adobe-public-releases</id>
+            <name>Adobe Public Repository</name>
+            <url>http://repo.adobe.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        
+        <repository>
+            <id>adobe-public-snapshot</id>
+            <name>Adobe Public Repository</name>
+            <url>http://repo.adobe.com/nexus/content/groups/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        
+    </repositories>
+    
+    <!-- ====================================================================== -->
+    <!-- P L U G I N - R E P O S I T O R I E S -->
+    <!-- ====================================================================== -->
+    <pluginRepositories>
+        
+        <pluginRepository>
+            <id>adobe-public-releases</id>
+            <name>Adobe Public Repository</name>
+            <url>http://repo.adobe.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        
+    </pluginRepositories>
+    
+</project>
