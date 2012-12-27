@@ -18,7 +18,7 @@ import org.apache.sling.commons.jdp.api.IJDPFactory;
  * org.apache.sling.commons.proxy.poc.jdp.DefaultJDPImpl
  */
 public final class DefaultJDPFactoryImpl implements IJDPFactory {
-
+	
 	public <T> T newInstance(Resource r, Class<T> type) {
 		if (r == null) {
 			throw new NullPointerException("The Resource cannot be NULL.");
@@ -35,5 +35,5 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
 		T rtn = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[] { type }, ih);
 		return rtn;
 	}
-
+	
 }

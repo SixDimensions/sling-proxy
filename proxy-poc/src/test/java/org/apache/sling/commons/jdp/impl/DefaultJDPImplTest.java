@@ -161,7 +161,7 @@ public class DefaultJDPImplTest {
 		assertTrue("The 2 Objects for the same resource but different JDP Interfaces were equal and should not be", ! node1.equals(node3));
 	}
 	
-	private static <T> T newInstance(String resource, Class<T>... t) throws Exception {
+	private static <T> T newInstance(String resource, Class<T> t) throws Exception {
 		Resource r1 = SlingEnvironmentHelper.getResource(null, null, resource);
 		assertTrue("Resource " + resource + " was NULL", r1 != null);
 		
