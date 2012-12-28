@@ -1,8 +1,8 @@
 package org.apache.sling.commons.jdp;
 
-import org.apache.sling.commons.jdp.api.ReflectTestCase;
 import org.apache.sling.commons.jdp.impl.DefaultJDPImplTest;
 import org.apache.sling.commons.jdp.impl.PropertyHandlerTest;
+import org.apache.sling.commons.reflection.ReflectTestCase;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;

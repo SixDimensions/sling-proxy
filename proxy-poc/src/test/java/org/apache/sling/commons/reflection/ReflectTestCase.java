@@ -1,8 +1,6 @@
-package org.apache.sling.commons.jdp.api;
+package org.apache.sling.commons.reflection;
 
 import static org.junit.Assert.*;
-
-import java.lang.annotation.Target;
 
 import org.junit.After;
 import org.junit.Before;

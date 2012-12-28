@@ -6,7 +6,9 @@ package org.apache.sling.commons.jdp.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -29,12 +31,26 @@ import org.apache.sling.commons.reflection.PrimeNumber;
  */
 final class ResourceInvocationHandler implements InvocationHandler {
 	
-	@SuppressWarnings("unused")
 	private final Resource r;
 	private final Node node;
+	@SuppressWarnings("rawtypes")
+	private final Set<Class> denyInvocations;
+	private final int denyInvocationSize;
+	
+	/**
+	 * Create a new ResourceInvocationHandler allowing invocation of all Methods
+	 * that this InvocationHandler represents
+	 * @param r Resource - the 
+	 */
 	ResourceInvocationHandler(Resource r) {
+		this(r, null);
+	}
+	@SuppressWarnings("rawtypes")
+	ResourceInvocationHandler(Resource r, Set<Class> denyInvocations) {
 		this.r = r;
 		this.node = r.adaptTo(Node.class);
+		this.denyInvocationSize = (denyInvocations != null ?  denyInvocations.size() : -1);
+		this.denyInvocations = (this.denyInvocationSize > 0 ? Collections.unmodifiableSet(denyInvocations) : null);
 	}
 	/**************************************************************************
 	 * 
@@ -46,6 +62,13 @@ final class ResourceInvocationHandler implements InvocationHandler {
 	 */
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
+		if (denyInvocationSize > 0) {
+			if (denyInvocations.contains(method.getDeclaringClass())) {
+				String msg = "Invocation of method " + method.getName() + 
+						" has been denied by this ResourceInvocationHandler.";
+				throw new IllegalStateException(msg);
+			}
+		}
 		InvokedTO to = InvokedTO.newInstance(proxy, method, args);
 		if (to.isGetter()) {
 			return (handleGet(to));

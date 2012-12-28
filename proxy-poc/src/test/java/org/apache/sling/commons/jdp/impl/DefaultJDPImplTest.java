@@ -178,7 +178,15 @@ public class DefaultJDPImplTest {
 	}
 	
 	@OSGiService(service=MyFunkyService.class, implementation=MyFunkyServiceImpl.class)
-	private static interface JcrContentNode2 extends JcrContentNode3, JcrContentNode4, MyFunkyService {
+	private static interface JcrContentNode2 extends MyFunkyService {
+		@SlingProperty(path="cq:lastReplicated")
+		Date getLastReplicated();
+		@SlingProperty(path="jcr:title")
+		String getTitle();
+		@SlingProperty(path="header/jcr:title")
+		String getHeaderTitle();
+		@SlingProperty(path="par/image/fileReference")
+		String getImagePath();
 	}
 	
 	private static interface MyFunkyService {
@@ -186,23 +194,9 @@ public class DefaultJDPImplTest {
 		int calculateDepth();
 	}
 	
-	private static interface JcrContentNode3 {
-		@SlingProperty(path="cq:lastReplicated")
-		Date getLastReplicated();
-		@SlingProperty(path="jcr:title")
-		String getTitle();
-	}
-	
-	private static interface JcrContentNode4 {
-		@SlingProperty(path="header/jcr:title")
-		String getHeaderTitle();
-		@SlingProperty(path="par/image/fileReference")
-		String getImagePath();
-	}
 	
 	private static final class MyFunkyServiceImpl implements MyFunkyService {
-		private JcrContentNode3 instance;
-		private JcrContentNode4 instance2;
+		private JcrContentNode2 instance;
 		
 		public String whatIsTheResourcePath() {
 			return null;

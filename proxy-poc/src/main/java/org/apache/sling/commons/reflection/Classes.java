@@ -4,6 +4,7 @@
 package org.apache.sling.commons.reflection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +19,31 @@ import java.util.Set;
  */
 public final class Classes {
 	private Classes() {}
+	
+	@SuppressWarnings("rawtypes")
+	public static Class getClass(Class[] ca, Method m) {
+		int size = size(ca);
+		
+		if (size > 0) {
+			for (Class c : ca) {
+				if (contains(c, m)) {
+					return c;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static boolean contains(Class c, Method m) {
+		try {
+			Method m2 = c.getMethod(m.getName(), m.getParameterTypes());
+			return (m == m2 || m.getReturnType() == m2.getReturnType());
+		} catch (NoSuchMethodException ex) {
+		}
+		return false;
+	}
 
 	@SuppressWarnings("rawtypes")
 	public static List<Field> getFields(Object obj) {
