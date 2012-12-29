@@ -6,7 +6,7 @@ package org.apache.sling.commons.reflection;
 import java.lang.reflect.Method;
 
 /**
- * @author kellehmj - Dec 25, 2012 3:12:05 PM 
+ * @author MJKelleher  - Dec 25, 2012 3:12:05 PM 
  *
  * proxy-poc
  *

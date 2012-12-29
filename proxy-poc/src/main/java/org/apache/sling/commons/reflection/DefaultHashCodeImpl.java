@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author kellehmj - Dec 26, 2012 1:46:08 PM 
+ * @author MJKelleher  - Dec 26, 2012 1:46:08 PM 
  *
  * proxy-poc
  *

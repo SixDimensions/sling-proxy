@@ -4,7 +4,7 @@
 package org.apache.sling.commons.reflection;
 
 /**
- * @author kellehmj - Dec 26, 2012 1:38:53 PM 
+ * @author MJKelleher  - Dec 26, 2012 1:38:53 PM 
  *
  * proxy-poc
  *

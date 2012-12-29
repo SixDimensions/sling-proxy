@@ -24,7 +24,7 @@ import javax.jcr.ValueFormatException;
 import org.apache.sling.api.resource.Resource;
 
 /**
- * @author kellehmj - Dec 24, 2012 12:27:17 AM 
+ * @author MJKelleher  - Dec 24, 2012 12:27:17 AM 
  *
  * proxy-poc
  *
@@ -72,8 +72,13 @@ final class PropertyHandler {
 	 * @throws RepositoryException
 	 */
 	@SuppressWarnings("unchecked")
-	static <T> T cast(Value v, Class<T> type) 
-			throws RepositoryException {
+	static <T> T cast(Value v, Class<T> type) throws RepositoryException {
+		if (type == null) {
+			String msg = "Attempt to cast Value Object from NULL Class<T> type";
+			throw new NullPointerException(msg);
+		}
+		if (v == null) 	return (T) null;
+		
 		Object rtn = null;
 		switch (toPropertyType(type)) {
 			case PropertyType.BINARY :
@@ -103,6 +108,9 @@ final class PropertyHandler {
 			case PropertyType.WEAKREFERENCE :
 				rtn = v.getString(); break;
 		}
+		
+		if (rtn == null) return (T) null;
+		
 		if (! type.isAssignableFrom(rtn.getClass())) {
 			rtn = coerce(rtn, type);
 		}
@@ -143,6 +151,17 @@ final class PropertyHandler {
 		return pt;
 	}
 	
+	/**
+	 * @TODO - turn 'coerce' into an Interface, and this class will potentially
+	 * contain many implementations of 'coerce' - and this will loop through 
+	 * them all until it finds one that will coerce the source type into the
+	 * target type.
+	 * 
+	 * @param source
+	 * @param type
+	 * @return
+	 * @throws RepositoryException
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static Object coerce(Object source, Class type) 
 			throws RepositoryException {

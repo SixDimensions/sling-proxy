@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * @author kellehmj - Dec 24, 2012 4:06:16 PM 
+ * @author MJKelleher  - Dec 24, 2012 4:06:16 PM 
  *
  * proxy-poc
  *

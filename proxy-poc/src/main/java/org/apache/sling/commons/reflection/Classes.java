@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author kellehmj - Dec 25, 2012 2:59:42 PM 
+ * @author MJKelleher  - Dec 25, 2012 2:59:42 PM 
  *
  * proxy-poc
  *
@@ -20,6 +20,28 @@ import java.util.Set;
 public final class Classes {
 	private Classes() {}
 	
+	/**
+	 * Convenience method for returning as a Set the Interfaces the given class 
+	 * extends or implements 
+	 * @param c Class
+	 * @return Set<Class> - guaranteed to be non Null, but may be empty
+	 */
+	public static Set<Class> getInterfaces(Class c) {
+		Class[] ca = c.getInterfaces();
+		int size = (ca == null ? 0 : ca.length);
+		Set<Class> set = new java.util.HashSet<Class>(size);
+		for (Class clazz : ca) {
+			set.add(clazz);
+		}
+		return set;
+	}
+	
+	/**
+	 * Find the first Class that contains the given Method
+	 * @param ca Class[]
+	 * @param m Method
+	 * @return Class - the class containing the Method or NULL if not found
+	 */
 	@SuppressWarnings("rawtypes")
 	public static Class getClass(Class[] ca, Method m) {
 		int size = size(ca);

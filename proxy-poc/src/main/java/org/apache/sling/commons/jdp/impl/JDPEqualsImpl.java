@@ -9,7 +9,7 @@ import org.apache.sling.commons.reflection.Classes;
 import org.apache.sling.commons.reflection.IEquals;
 
 /**
- * @author kellehmj - Dec 27, 2012 12:58:32 AM 
+ * @author MJKelleher  - Dec 27, 2012 12:58:32 AM 
  *
  * proxy-poc
  *

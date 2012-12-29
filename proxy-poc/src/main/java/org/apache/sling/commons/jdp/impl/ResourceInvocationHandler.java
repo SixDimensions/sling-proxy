@@ -22,7 +22,7 @@ import org.apache.sling.commons.reflection.IHashCode;
 import org.apache.sling.commons.reflection.PrimeNumber;
 
 /**
- * @author kellehmj - Dec 23, 2012 11:27:36 PM 
+ * @author MJKelleher  - Dec 23, 2012 11:27:36 PM 
  *
  * proxy-poc
  *

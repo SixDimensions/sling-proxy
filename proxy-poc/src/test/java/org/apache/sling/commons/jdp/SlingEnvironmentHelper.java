@@ -21,7 +21,7 @@ import org.apache.sling.jcr.resource.internal.JcrResourceResolverFactoryImpl;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author kellehmj - Dec 25, 2012 11:09:53 PM 
+ * @author MJKelleher  - Dec 25, 2012 11:09:53 PM 
  *
  * proxy-poc
  *

@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author kellehmj - Dec 24, 2012 9:59:07 AM 
+ * @author MJKelleher  - Dec 24, 2012 9:59:07 AM 
  *
  * proxy-poc
  *

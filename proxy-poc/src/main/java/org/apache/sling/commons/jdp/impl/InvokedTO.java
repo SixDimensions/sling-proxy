@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import org.apache.sling.commons.jdp.api.annotations.SlingProperty;
 
 /**
- * @author kellehmj - Dec 23, 2012 11:28:35 PM 
+ * @author MJKelleher  - Dec 23, 2012 11:28:35 PM 
  *
  * proxy-poc
  *

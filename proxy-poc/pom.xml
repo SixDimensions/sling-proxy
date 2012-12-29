@@ -41,20 +41,18 @@
             ways if you refer to a variable in the configuration that does
             not exist. 
         -->
-        <bundle.sling.resources>/META-INF/tags</bundle.sling.resources>
-        <bundle.resources>/META-INF/tags</bundle.resources>
         <bundle.export.package>{local-packages};version=${project.version}</bundle.export.package>
+        <bundle.private.package></bundle.private.package>
         <bundle.import.package>*</bundle.import.package>
-        <bundle.ignore.package></bundle.ignore.package>
+        
+        <bundle.sling.resources></bundle.sling.resources>
+        <bundle.description></bundle.description>
+        <bundle.resources></bundle.resources>
+        <bundle.activator></bundle.activator>
+        
         <bundle.include.resource>{maven-resources}</bundle.include.resource>
         <bundle.embed.dependency></bundle.embed.dependency>
         <bundle.classpath>.,{maven-dependencies}</bundle.classpath>
-        <bundle.private.package></bundle.private.package>
-        <bundle.activator></bundle.activator>
-        <bundle.description></bundle.description>
-        
-        <bundle.packaging>jar</bundle.packaging>
-        
         
         <slf4j.version>1.6.4</slf4j.version>
         <jackrabbit.version>2.4.0</jackrabbit.version>
@@ -166,84 +164,88 @@
                 </configuration>
 
             </plugin>
-            
-            <plugin>
-                <groupId>org.eclipse.m2e</groupId>
-                <artifactId>lifecycle-mapping</artifactId>
-                <configuration>
-                    <lifecycleMappingMetadata>
-                        <pluginExecutions>
-                        
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-enforcer-plugin</artifactId>
-                                    <versionRange>[1.0,)</versionRange>
-                                    <goals><goal>enforce</goal></goals>
-                                </pluginExecutionFilter>
-                                <action><ignore></ignore></action>
-                            </pluginExecution>
-
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-								    <groupId>org.apache.maven.plugins</groupId>
-								    <artifactId>maven-remote-resources-plugin</artifactId>
-                                    <versionRange>[1.0,)</versionRange>
-                                    <goals><goal>process</goal></goals>
-                                </pluginExecutionFilter>
-                                <action><ignore></ignore></action>
-                            </pluginExecution>
-                            
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>maven-bundle-plugin</artifactId>
-                                    <versionRange>[2.3.7,)</versionRange>
-                                    <goals><goal>manifest</goal></goals>
-                                </pluginExecutionFilter>
-                                <action><ignore></ignore></action>
-                            </pluginExecution>
-                            
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>maven-scr-plugin</artifactId>
-                                    <versionRange>[1.7.4,)</versionRange>
-                                    <goals><goal>scr</goal></goals>
-                                </pluginExecutionFilter>
-                                <action><ignore></ignore></action>
-                            </pluginExecution>
-                            
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-dependency-plugin</artifactId>
-                                    <versionRange>[2.4,)</versionRange>
-                                    <goals>
-                                        <goal>unpack</goal>
-                                        <goal>copy</goal>
-                                        <goal>copy-dependencies</goal>
-                                    </goals>
-                                </pluginExecutionFilter>
-                                <action><ignore></ignore></action>
-                            </pluginExecution>
-                            
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-antrun-plugin</artifactId>
-                                    <versionRange>[1.3,)</versionRange>
-                                    <goals><goal>run</goal></goals>
-                                </pluginExecutionFilter>
-                                <action><ignore></ignore></action>
-                            </pluginExecution>
-                                                            
-                        </pluginExecutions>
-                        
-                    </lifecycleMappingMetadata>
-                </configuration>
-            </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+	            <plugin>
+	                <groupId>org.eclipse.m2e</groupId>
+	                <artifactId>lifecycle-mapping</artifactId>
+	                
+	                <configuration>
+	                    <lifecycleMappingMetadata>
+	                        <pluginExecutions>
+	                        
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.apache.maven.plugins</groupId>
+	                                    <artifactId>maven-enforcer-plugin</artifactId>
+	                                    <versionRange>[1.0,)</versionRange>
+	                                    <goals><goal>enforce</goal></goals>
+	                                </pluginExecutionFilter>
+	                                <action><ignore /></action>
+	                            </pluginExecution>
+	
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.apache.maven.plugins</groupId>
+	                                    <artifactId>maven-remote-resources-plugin</artifactId>
+	                                    <versionRange>[1.0,)</versionRange>
+	                                    <goals><goal>process</goal></goals>
+	                                </pluginExecutionFilter>
+	                                <action><ignore/></action>
+	                            </pluginExecution>
+	                            
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.apache.felix</groupId>
+	                                    <artifactId>maven-bundle-plugin</artifactId>
+	                                    <versionRange>[2.3.7,)</versionRange>
+	                                    <goals><goal>manifest</goal></goals>
+	                                </pluginExecutionFilter>
+	                                <action><ignore/></action>
+	                            </pluginExecution>
+	                            
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.apache.felix</groupId>
+	                                    <artifactId>maven-scr-plugin</artifactId>
+	                                    <versionRange>[1.7.4,)</versionRange>
+	                                    <goals><goal>scr</goal></goals>
+	                                </pluginExecutionFilter>
+	                                <action><ignore/></action>
+	                            </pluginExecution>
+	                            
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.apache.maven.plugins</groupId>
+	                                    <artifactId>maven-dependency-plugin</artifactId>
+	                                    <versionRange>[2.4,)</versionRange>
+	                                    <goals>
+	                                        <goal>unpack</goal>
+	                                        <goal>copy</goal>
+	                                        <goal>copy-dependencies</goal>
+	                                    </goals>
+	                                </pluginExecutionFilter>
+	                                <action><ignore/></action>
+	                            </pluginExecution>
+	                            
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.apache.maven.plugins</groupId>
+	                                    <artifactId>maven-antrun-plugin</artifactId>
+	                                    <versionRange>[1.3,)</versionRange>
+	                                    <goals><goal>run</goal></goals>
+	                                </pluginExecutionFilter>
+	                                <action><ignore/></action>
+	                            </pluginExecution>
+	                                                            
+	                        </pluginExecutions>
+	                        
+	                    </lifecycleMappingMetadata>
+	                </configuration>
+	            </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <!-- ====================================================================== -->

@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author kellehmj - Dec 17, 2012 11:11:08 PM 
+ * @author MJKelleher  - Dec 17, 2012 11:11:08 PM 
  *
  * proxy-poc
  *

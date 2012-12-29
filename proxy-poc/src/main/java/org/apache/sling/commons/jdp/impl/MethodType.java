@@ -4,7 +4,7 @@
 package org.apache.sling.commons.jdp.impl;
 
 /**
- * @author kellehmj - Dec 23, 2012 11:37:12 PM 
+ * @author MJKelleher  - Dec 23, 2012 11:37:12 PM 
  *
  * proxy-poc
  *

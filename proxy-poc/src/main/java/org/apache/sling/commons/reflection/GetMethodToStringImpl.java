@@ -8,7 +8,7 @@ import java.util.List;
 
 
 /**
- * @author kellehmj - Dec 25, 2012 2:54:53 PM 
+ * @author MJKelleher  - Dec 25, 2012 2:54:53 PM 
  *
  * proxy-poc
  *

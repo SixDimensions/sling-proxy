@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 
 /**
- * @author kellehmj - Dec 27, 2012 5:44:47 PM 
+ * @author MJKelleher  - Dec 27, 2012 5:44:47 PM 
  *
  * proxy-poc
  *
