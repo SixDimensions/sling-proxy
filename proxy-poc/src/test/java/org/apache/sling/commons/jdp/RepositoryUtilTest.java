@@ -39,6 +39,11 @@ public final class RepositoryUtilTest {
 		SlingEnvironmentHelper.tearDown();
 	}
 	
+        @Test
+        public void testSleep() throws Exception {
+            Thread.currentThread().sleep(1000 * 10);
+        }
+        
 	@Test
 	public void testLoginSession() throws Exception {
 		Session s = null;
