@@ -46,8 +46,8 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
 		if (interfaces.size() > 0) {
 			Set<OSGiService> osgisvcs = getOSGiServiceAnnotations(type, interfaces);
 			
-			Set<Class> svcIntfcs = toServiceInterfaces(osgisvcs);
-			if (svcIntfcs.size() > 0) {
+			if (osgisvcs.size() > 0) {
+				Set<Class> svcIntfcs = toServiceInterfaces(osgisvcs);
 				boolean atLeastOneRemoved = interfaces.removeAll(svcIntfcs);
 			}
 		}
