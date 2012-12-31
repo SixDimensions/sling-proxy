@@ -44,9 +44,9 @@ public final class JdkToStringImpl implements IToString {
 
     private boolean supportsToString(Object obj, StringBuilder sb) {
         try {
-            Method m = obj.getClass().getDeclaredMethod("toString", null);
+            Method m = obj.getClass().getDeclaredMethod("toString", (Class[]) null);
             try {
-                Object result = m.invoke(obj, null);
+                Object result = m.invoke(obj, (Object[]) null);
                 sb.append(result);
             } catch (Exception ex) {
                 sb.append("caused - ").append(ex.getClass().getName()).append(" - Message = ").append(ex.getMessage());
