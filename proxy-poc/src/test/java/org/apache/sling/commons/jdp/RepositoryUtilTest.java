@@ -38,11 +38,6 @@ public final class RepositoryUtilTest {
 	public void tearDown() throws Exception {
 		SlingEnvironmentHelper.tearDown();
 	}
-	
-        @Test
-        public void testSleep() throws Exception {
-            Thread.currentThread().sleep(1000 * 10);
-        }
         
 	@Test
 	public void testLoginSession() throws Exception {
