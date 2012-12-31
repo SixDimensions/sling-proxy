@@ -1,4 +1,4 @@
-package org.apache.sling.commons.reflection;
+package org.apache.sling.commons.lang;
 
 /**
  * 

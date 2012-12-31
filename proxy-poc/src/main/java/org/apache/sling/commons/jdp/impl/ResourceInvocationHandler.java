@@ -15,11 +15,11 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.commons.reflection.DefaultHashCodeImpl;
-import org.apache.sling.commons.reflection.GetMethodToStringImpl;
-import org.apache.sling.commons.reflection.IEquals;
-import org.apache.sling.commons.reflection.IHashCode;
-import org.apache.sling.commons.reflection.PrimeNumber;
+import org.apache.sling.commons.lang.DefaultHashCodeImpl;
+import org.apache.sling.commons.lang.GetMethodToStringImpl;
+import org.apache.sling.commons.lang.IEquals;
+import org.apache.sling.commons.lang.IHashCode;
+import org.apache.sling.commons.lang.PrimeNumber;
 
 /**
  * @author MJKelleher  - Dec 23, 2012 11:27:36 PM 

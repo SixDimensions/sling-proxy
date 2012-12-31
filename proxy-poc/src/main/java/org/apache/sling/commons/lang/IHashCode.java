@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.apache.sling.commons.reflection;
+package org.apache.sling.commons.lang;
 
 /**
  * @author MJKelleher  - Dec 26, 2012 1:38:53 PM 

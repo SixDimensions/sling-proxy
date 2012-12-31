@@ -1,8 +1,9 @@
 /**
  * 
  */
-package org.apache.sling.commons.reflection;
+package org.apache.sling.commons.lang;
 
+import org.apache.sling.commons.lang.IHashCode;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.sling.commons.reflection.Classes;
 
 /**
  * @author MJKelleher  - Dec 26, 2012 1:46:08 PM 

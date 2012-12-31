@@ -1,8 +1,9 @@
 /**
  * 
  */
-package org.apache.sling.commons.reflection;
+package org.apache.sling.commons.lang;
 
+import org.apache.sling.commons.lang.IToString;
 import java.lang.reflect.Method;
 
 /**

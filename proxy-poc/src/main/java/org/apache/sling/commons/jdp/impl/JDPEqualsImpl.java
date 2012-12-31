@@ -6,7 +6,7 @@ package org.apache.sling.commons.jdp.impl;
 import java.lang.reflect.Proxy;
 
 import org.apache.sling.commons.reflection.Classes;
-import org.apache.sling.commons.reflection.IEquals;
+import org.apache.sling.commons.lang.IEquals;
 
 /**
  * @author MJKelleher  - Dec 27, 2012 12:58:32 AM 
