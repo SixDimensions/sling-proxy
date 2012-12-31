@@ -13,21 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sling.commons.jdp;
+package org.apache.sling.commons.jdp.impl;
 
-import org.apache.sling.commons.jdp.impl.DefaultJDPImplTest;
-import org.apache.sling.commons.jdp.impl.PropertyHandlerTest;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({ RepositoryUtilTest.class , DefaultJDPImplTest.class , PropertyHandlerTest.class })
-public class AllTests {
+/**
+ *
+ * @author kellehmj
+ */
+public class ServiceImplementationHelper {
     
-    @BeforeClass 
-    public static void sleepForProfilerAttach() throws Exception {
-        Thread.currentThread().sleep(1000 * 10);
-    }
 }
