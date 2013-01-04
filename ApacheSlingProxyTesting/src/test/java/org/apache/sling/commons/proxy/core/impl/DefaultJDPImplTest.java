@@ -193,16 +193,16 @@ public class DefaultJDPImplTest {
     @OSGiService(service = MyFunkyService.class, implementation = MyFunkyServiceImpl.class)
     private static interface JcrContentNode2 extends MyFunkyService {
 
-        @SlingProperty(path = "cq:lastReplicated")
+        @SlingProperty(name = "cq:lastReplicated")
         Date getLastReplicated();
 
-        @SlingProperty(path = "jcr:title")
+        @SlingProperty(name = "jcr:title")
         String getTitle();
 
-        @SlingProperty(path = "header/jcr:title")
+        @SlingProperty(path = "header", name = "jcr:title")
         String getHeaderTitle();
 
-        @SlingProperty(path = "par/image/fileReference")
+        @SlingProperty(path = "par/image", name = "fileReference")
         String getImagePath();
     }
 

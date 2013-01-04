@@ -20,7 +20,6 @@ import java.util.Date;
 import javax.jcr.Property;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.core.SlingEnvironmentHelper;
-import org.apache.sling.commons.proxy.core.RepositoryUtilTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

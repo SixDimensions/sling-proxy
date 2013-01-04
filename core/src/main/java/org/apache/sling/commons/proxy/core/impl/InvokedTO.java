@@ -16,6 +16,7 @@
 package org.apache.sling.commons.proxy.core.impl;
 
 import java.lang.reflect.Method;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 
 /**
@@ -137,6 +138,20 @@ final class InvokedTO {
 
     private static String getBeanNameByAnnotation(Method m) {
         SlingProperty sp = m.getAnnotation(SlingProperty.class);
-        return (sp != null ? sp.path() : null);
+        if (sp == null) {
+            return null;
+        }
+
+        String path = nullToZeroLength(sp.path());
+        path = (path.length() > 0 ? path + "/" : path);
+        String name = nullToZeroLength(sp.name());
+        if (name.length() < 1) {
+            throw new IllegalStateException("The name value for SlingProperty cannot be empty on method " + m.getName() + "!");
+        }
+        return path + name;
+    }
+
+    private static String nullToZeroLength(String str) {
+        return (str == null ? "" : str.trim());
     }
 }

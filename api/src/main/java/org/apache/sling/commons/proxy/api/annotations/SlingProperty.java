@@ -39,9 +39,9 @@ public @interface SlingProperty {
 	String name() default "";
 
 	/**
-	 * The path to the property to retrieve, if it beings with / it will be
-	 * treated as an absolute path, otherwise, it will be treated as a relative
-	 * path.
+	 * The path to the property to retrieve, if it begins with '/' it will 
+	 * be treated as an absolute path, otherwise, it will be treated as a 
+	 * relative path.
 	 * 
 	 * @return the path to the property to retrieve
 	 */
