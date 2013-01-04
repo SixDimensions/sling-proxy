@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	you under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- ====================================================================== -->
+    <!-- P A R E N T - P R O J E C T - D E S C R I P T I O N -->
+    <!-- ====================================================================== -->
+    <parent>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>sling</artifactId>
+        <version>13</version>
+    </parent>
+    
+    <artifactId>ApacheSlingProxyTesting</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>slingProxyLocalTesting</name>
+
+    <!-- ====================================================================== -->
+    <!-- P R O J E C T - P R O P E R T I E S -->
+    <!-- ====================================================================== -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!--
+        NAME: surefire.useFile
+        
+        Description:  
+        This prints test failures to stdout  
+        -->
+        <surefire.useFile>true</surefire.useFile>
+        
+        <slf4j.version>1.6.4</slf4j.version>
+        <jackrabbit.version>2.4.0</jackrabbit.version>
+        <spi2dav.version>2.4.0</spi2dav.version>
+    </properties>
+    <!-- ====================================================================== -->
+    <!-- S C M  -  C O N N E C T I O N -->
+    <!-- ====================================================================== -->
+    <scm>
+        <connection>scm:git:https://github.com/SixDimensions/sling-proxy.git</connection>
+        <developerConnection>scm:git:https://github.com/SixDimensions/sling-proxy.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/SixDimensions/sling-proxy</url>
+    </scm>
+    
+    <!-- ====================================================================== -->
+    <!-- O R G A N I Z A T I O N -->
+    <!-- ====================================================================== -->
+    <organization>
+        <name>Six Dimensions</name>
+        <url>http://6dlabs.com</url>
+    </organization>
+    
+    <!-- ====================================================================== -->
+    <!-- D E V E L O P E R S -->
+    <!-- ====================================================================== -->
+    <developers>
+        <developer>
+            <id>dklco</id>
+            <name>Dan Klco</name>
+            <email>dan.klco@sixdimensions.com</email>
+            <url></url>
+            <organization>Six Dimensions</organization>
+            <organizationUrl>http://6dlabs.com/</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>consultant</role>
+            </roles>
+            <timezone>-5</timezone>
+            <properties>
+                <picUrl></picUrl>
+            </properties>
+        </developer>
+        
+        <developer>
+            <id>mjkelleher</id>
+            <name>Michael J. Kelleher</name>
+            <email>michael.kelleher@sixdimensions.com</email>
+            <url></url>
+            <organization>Six Dimensions</organization>
+            <organizationUrl>http://6dlabs.com/</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>consultant</role>
+            </roles>
+            <timezone>-5</timezone>
+            <properties>
+                <picUrl>http://fogsmoviereviews.files.wordpress.com/2012/06/monty_python_an_the_holy_grail_17.png</picUrl>
+            </properties>
+        </developer>
+    </developers>
+    
+    <!-- ====================================================================== -->
+    <!-- B U I L D - D E F I N I T I O N -->
+    <!-- ====================================================================== -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgument>-Xlint:all</compilerArgument>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <!-- ====================================================================== -->
+    <!-- D E P E N D E N C I E S -->
+    <!-- ====================================================================== -->
+    <dependencies>
+        
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.proxy.api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>bundle</type>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.proxy.core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>bundle</type>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- 
+        The 'provided' dependencies are required for the bundle under testing
+        -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+            <version>2.2.4</version><!-- 2.1.0 -->
+            <scope>provided</scope>
+        </dependency>
+                
+        <!-- 
+        The 'test' dependencies are required for, yes, testing....
+        -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.commons.log</artifactId>
+            <version>2.1.3-R1232904</version>
+            <scope>test</scope>
+        </dependency>
+	        
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.5</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
+        </dependency>
+                
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-api</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr2dav</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr2spi</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr-commons</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-spi</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-spi-commons</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-webdav</artifactId>
+            <version>${jackrabbit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.jcr.resource</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+		
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.adapter</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.eventadmin</artifactId>
+            <version>1.2.8</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <!-- ====================================================================== -->
+    <!-- R E P O S I T O R I E S -->
+    <!-- ====================================================================== -->
+    <repositories>
+    
+        <repository>
+            <id>adobe-public-releases</id>
+            <name>Adobe Public Repository</name>
+            <url>http://repo.adobe.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        
+        <repository>
+            <id>adobe-public-snapshot</id>
+            <name>Adobe Public Repository</name>
+            <url>http://repo.adobe.com/nexus/content/groups/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        
+    </repositories>
+    
+    <!-- ====================================================================== -->
+    <!-- P L U G I N - R E P O S I T O R I E S -->
+    <!-- ====================================================================== -->
+    <pluginRepositories>
+        
+        <pluginRepository>
+            <id>adobe-public-releases</id>
+            <name>Adobe Public Repository</name>
+            <url>http://repo.adobe.com/nexus/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        
+    </pluginRepositories>
+    
+</project>
