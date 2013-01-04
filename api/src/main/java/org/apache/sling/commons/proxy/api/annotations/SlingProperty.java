@@ -18,10 +18,7 @@
  */
 package org.apache.sling.commons.proxy.api.annotations;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation for overriding the behavior of the DefaultProxyHandler in
@@ -31,6 +28,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
+@Documented
 public @interface SlingProperty {
 
 	/**
