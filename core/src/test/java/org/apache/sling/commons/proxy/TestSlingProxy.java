@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
+import org.apache.sling.commons.proxy.api.*;
 import org.apache.sling.commons.proxy.api.AbstractProxyAdapterFactory;
 import org.apache.sling.commons.proxy.api.ProxyAnnotationHandlerManager;
 import org.apache.sling.commons.proxy.api.SlingProxy;
@@ -111,7 +112,7 @@ public class TestSlingProxy {
 		Resource resource = resolver.getResource("/content/test/jcr:content");
 		SimpleSlingProxy simpleSlingProxy = resource
 				.adaptTo(SimpleSlingProxy.class);
-
+                
 		log.info("Testing backing resource");
 		assertEquals(simpleSlingProxy.getBackingResource(), resource);
 

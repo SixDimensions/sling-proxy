@@ -27,7 +27,7 @@ import org.apache.sling.commons.proxy.api.SlingProxy;
  * @author dklco
  */
 public interface SimpleSlingProxy extends SlingProxy {
-
+    
 	/**
 	 * Gets the jcr:title attribute
 	 * 
