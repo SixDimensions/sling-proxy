@@ -15,6 +15,7 @@
  */
 package org.apache.sling.commons.proxy.core.impl;
 
+import java.io.InputStream;
 import static org.junit.Assert.*;
 import java.util.Date;
 import org.apache.sling.api.resource.Resource;
@@ -171,6 +172,23 @@ public class DefaultJDPImplTest {
 
         assertTrue("The 2 Objects for the same resource but different JDP Interfaces were equal and should not be", !node1.equals(node3));
     }
+    
+    @Test
+    public void testBinaryResource() throws Exception {
+        String path1 = "/content/geometrixx/en/jcr:content";
+        JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
+        
+        InputStream ips = node1.getGeoCubePDF();
+        assertTrue("The GeoCube InputStream was NULL.", ips != null);
+        
+        int byteCount = 0;
+        for (int read=0; (read = ips.read()) != -1 ; ) {
+            byteCount++;
+        }
+        ips.close();
+        
+        log.debug("Read {} bytes from GeoCubePDF", byteCount);
+    }
 
     private static <T> T newInstance(String resource, Class<T> t) throws Exception {
         Resource r1 = SlingEnvironmentHelper.getResource(null, null, resource);
@@ -204,6 +222,9 @@ public class DefaultJDPImplTest {
 
         @SlingProperty(path = "par/image", name = "fileReference")
         String getImagePath();
+        
+        @SlingProperty(path="/content/dam/geometrixx/documents/GeoCube_Datasheet.pdf/jcr:content/renditions/original/jcr:content", name="jcr:data")
+        InputStream getGeoCubePDF();
     }
 
     private static interface MyFunkyService {
