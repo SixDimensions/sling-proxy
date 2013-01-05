@@ -202,9 +202,11 @@ public class DefaultJDPImplTest {
     }
 
     private static interface JcrContentNode {
-
+        
+        @SlingProperty
         Date getCq_lastReplicated();
-
+        
+        @SlingProperty
         String getJcr_title();
     }
 

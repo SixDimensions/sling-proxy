@@ -16,7 +16,8 @@
 package org.apache.sling.commons.proxy.core.impl;
 
 import java.lang.reflect.Method;
-import org.apache.sling.api.resource.Resource;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 
 /**
@@ -36,15 +37,15 @@ final class InvokedTO {
     final Object proxy;
     final Method method;
     final Object[] args;
-    final String beanName;
+    final String propertyName;
     final MethodType mt;
 
     private InvokedTO(Object proxy, Method method, Object[] args,
-            String beanName, MethodType mt) {
+            String propertyName, MethodType mt) {
         this.proxy = proxy;
         this.method = method;
         this.args = args;
-        this.beanName = beanName;
+        this.propertyName = propertyName;
         this.mt = mt;
     }
 
@@ -55,12 +56,17 @@ final class InvokedTO {
      *
      */
     public static InvokedTO newInstance(Object proxy, Method method, Object[] args) {
-        MethodType mt = getMethodType(method);
-        String bean = getBeanNameByAnnotation(method);
-        if (bean == null) {
-            bean = getBeanNameByMethodName(method, mt);
+        MethodType mt = MethodType.getMethodType(method);
+        String property = getNameByAnnotation(method);
+        if (property == null || property.length() < 1) {
+            property = MethodType.getBeanName(mt, method);
+            property = property.replace("_", ":");
         }
-        return new InvokedTO(proxy, method, args, bean, mt);
+        if (property == null || property.length() < 1) {
+            String msg = "Could not determine Bean Property name either from @SlingProperty annotation or the JavaBean method name.";
+            throw new IllegalStateException(msg);
+        }
+        return new InvokedTO(proxy, method, args, property, mt);
     }
 
     /**
@@ -74,22 +80,13 @@ final class InvokedTO {
     }
 
     public boolean isGetter() {
-        return isType(new MethodType[]{MethodType.JavaBeanIs,
-                    MethodType.JavaBeanGet});
+        return MethodType.contains(new MethodType[]{MethodType.JavaBeanIs,
+                    MethodType.JavaBeanGet}, mt);
     }
 
     public boolean isJavaBean() {
-        return isType(new MethodType[]{MethodType.JavaBeanIs,
-                    MethodType.JavaBeanGet, MethodType.JavaBeanSet});
-    }
-
-    private boolean isType(MethodType[] mta) {
-        for (MethodType _mt : mta) {
-            if (mt == _mt) {
-                return true;
-            }
-        }
-        return false;
+        return MethodType.contains(new MethodType[]{MethodType.JavaBeanIs,
+                    MethodType.JavaBeanGet, MethodType.JavaBeanSet}, mt);
     }
 
     /**
@@ -98,45 +95,8 @@ final class InvokedTO {
      *
      *
      */
-    private static MethodType getMethodType(Method method) {
-        String name = method.getName();
-        MethodType mt = MethodType.Unknown;
-        if (name.startsWith("is")) {
-            mt = MethodType.JavaBeanIs;
-        } else if (name.startsWith("get")) {
-            mt = MethodType.JavaBeanGet;
-        } else if (name.startsWith("set")) {
-            mt = MethodType.JavaBeanSet;
-        } else if (name.equals("toString")) {
-            mt = MethodType.ToString;
-        } else if (name.equals("hashCode")) {
-            mt = MethodType.HashCode;
-        } else if (name.equals("equals")) {
-            mt = MethodType.Equals;
-        }
-        return mt;
-    }
 
-    private static String getBeanNameByMethodName(Method method, MethodType mt) {
-        String name = method.getName();
-        int ndx = -1;
-        if (mt == MethodType.JavaBeanIs) {
-            ndx = 2;
-        } else if (mt == MethodType.JavaBeanGet) {
-            ndx = 3;
-        } else if (mt == MethodType.JavaBeanSet) {
-            ndx = 3;
-        }
-        String bean = null;
-        if (ndx > 0) {
-            bean = name.substring(ndx);
-            bean = bean.substring(0, 1).toLowerCase() + bean.substring(1);
-            bean = bean.replace("_", ":");
-        }
-        return bean;
-    }
-
-    private static String getBeanNameByAnnotation(Method m) {
+    private static String getNameByAnnotation(Method m) {
         SlingProperty sp = m.getAnnotation(SlingProperty.class);
         if (sp == null) {
             return null;
@@ -145,9 +105,6 @@ final class InvokedTO {
         String path = nullToZeroLength(sp.path());
         path = (path.length() > 0 ? path + "/" : path);
         String name = nullToZeroLength(sp.name());
-        if (name.length() < 1) {
-            throw new IllegalStateException("The name value for SlingProperty cannot be empty on method " + m.getName() + "!");
-        }
         return path + name;
     }
 

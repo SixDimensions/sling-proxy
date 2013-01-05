@@ -130,10 +130,10 @@ final class ResourceInvocationHandler implements InvocationHandler {
     private Object handleGet(InvokedTO to) throws Throwable {
         Property p;
         try {
-            if (to.beanName.startsWith("/")) {
-                p = (Property) node.getSession().getItem(to.beanName);
+            if (to.propertyName.startsWith("/")) {
+                p = (Property) node.getSession().getItem(to.propertyName);
             } else {
-                p = node.getProperty(to.beanName);
+                p = node.getProperty(to.propertyName);
             }
         } catch (PathNotFoundException ex) {
             return null;

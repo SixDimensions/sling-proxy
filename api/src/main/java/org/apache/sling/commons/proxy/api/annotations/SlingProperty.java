@@ -21,8 +21,43 @@ package org.apache.sling.commons.proxy.api.annotations;
 import java.lang.annotation.*;
 
 /**
- * Annotation for overriding the behavior of the DefaultProxyHandler in
- * retrieving properties from the Sling Resource.
+ * Annotation used to mark a Method as being a JCR backed property.  All JCR
+ * backed methods must use JavaBean style naming to identify them as either
+ * a 'getter' (getSomeValue, isSomevalue) or a JavaBean 'setter' 'setSomeValue'.
+ * 
+ * 'name' and 'path' are both optional.  If both are missing and/or empty, then
+ * the method name will be used to determine the corresponding JCR property
+ * name.  In this case, namespaced property names are handled this way:
+ * 
+ * @SlingProperty
+ * Date getCq_lastReplicated();
+ * 
+ * this will correspond to a JCR property name of:  'cq:lastReplicated'
+ * 
+ * The ":" in the property name must be represented as a "_" underscore in the
+ * Property name.
+ * 
+ * This style of property name identification will limit properties to being
+ * located immediately within the associated Resource Object.
+ * 
+ * It is recommended to use 'name' and 'path' values as this enables the use of
+ * extravagant property names located anywhere within the JCR, not simply 
+ * within the current Resource.
+ * 
+ * Property names starting with '/' are absolute references, and do not have to 
+ * be contained beneath the current Resource.  Property names not starting with
+ * '/' are assumed to be relative to the current Resource.
+ * 
+ * Here are 3 examples, one of each style:
+ * 
+ *   @SlingProperty(name = "cq:lastReplicated")
+ *   Date getLastReplicated();
+ * 
+ *   @SlingProperty(path = "par/image", name = "fileReference")
+ *   String getImagePath(); 
+ * 
+ *   @SlingProperty(path="/content/dam/geometrixx/documents/GeoCube_Datasheet.pdf/jcr:content/renditions/original/jcr:content", name="jcr:data")
+ *   InputStream getGeoCubePDF();
  * 
  * @author dklco
  */
