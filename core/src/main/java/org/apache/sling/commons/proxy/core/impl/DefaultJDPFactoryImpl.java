@@ -90,7 +90,7 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
      * @return Set<OSGiService> - all defined OSGiService annotations regardless
      * if they are defined directly or within @OSGiServices
      */
-    private static final Set<OSGiService> getOSGiServiceAnnotations(Class type, 
+    private static Set<OSGiService> getOSGiServiceAnnotations(Class type, 
             Set<Class> interfaces) {
         Set<OSGiService> services = new java.util.HashSet<OSGiService>();
 
@@ -107,7 +107,12 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
                 }
             }
         }
-
+        
+        return returnValidatedServices(type, interfaces, services);
+    }
+    
+    private static Set<OSGiService> returnValidatedServices(Class type, 
+            Set<Class> interfaces, Set<OSGiService> services) {
         Set<OSGiService> rtn = new java.util.HashSet<OSGiService>();
         for (OSGiService s : services) {
             if (s.service() == null) {
@@ -134,7 +139,7 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
         return rtn;
     }
 
-    private static final Set<Class> toServiceInterfaces(Set<OSGiService> set) {
+    private static Set<Class> toServiceInterfaces(Set<OSGiService> set) {
         Set<Class> rtn = new java.util.HashSet<Class>();
         if (set != null && set.size() > 0) {
             for (OSGiService svc : set) {

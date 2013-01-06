@@ -36,17 +36,18 @@ public final class Classes {
 
     /**
      * Convenience method for returning as a Set the Interfaces the given class
-     * extends or implements
+     * 'clazz' extends or implements.  If 'clazz' itself is an interface, it 
+     * will NOT be included in the Set.
      *
-     * @param c Class
-     * @return Set<Class> - guaranteed to be non Null, but may be empty
+     * @param clazz Class
+     * @return Set<Class> - guaranteed to be non Null but may be empty
      */
-    public static Set<Class> getInterfaces(Class c) {
-        Class[] ca = c.getInterfaces();
+    public static Set<Class> getInterfaces(Class clazz) {
+        Class[] ca = clazz.getInterfaces();
         int size = (ca == null ? 0 : ca.length);
         Set<Class> set = new java.util.HashSet<Class>(size);
-        for (Class clazz : ca) {
-            set.add(clazz);
+        for (Class _clazz : ca) {
+            set.add(_clazz);
         }
         return set;
     }
@@ -72,7 +73,14 @@ public final class Classes {
 
         return null;
     }
-
+    
+    /**
+     * Determines if Class 'c' contains the Method 'm'.  Method name, parameter
+     * types and return type are used to determine this.
+     * @param c Class
+     * @param m Method
+     * @return boolean
+     */
     @SuppressWarnings("unchecked")
     public static boolean contains(Class c, Method m) {
         try {
@@ -82,7 +90,15 @@ public final class Classes {
         }
         return false;
     }
-
+    
+    /**
+     * Get all of the member fields for Object 'obj' - including private, 
+     * protected, default, and Public.  This does not include inherited fields.
+     * This will not include Synthetic fields either.
+     * 
+     * @param obj Object
+     * @return List<Field> the list of Fields from an Object
+     */
     @SuppressWarnings("rawtypes")
     public static List<Field> getFields(Object obj) {
         java.util.ArrayList<Field> list = new java.util.ArrayList<Field>();

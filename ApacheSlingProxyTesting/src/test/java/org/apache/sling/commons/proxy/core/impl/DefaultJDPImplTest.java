@@ -15,9 +15,12 @@
  */
 package org.apache.sling.commons.proxy.core.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import static org.junit.Assert.*;
 import java.util.Date;
+import javax.jcr.RepositoryException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.core.SlingEnvironmentHelper;
 import org.apache.sling.commons.proxy.api.IJDPFactory;
@@ -46,7 +49,7 @@ public class DefaultJDPImplTest {
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         SlingEnvironmentHelper.setUp();
         SlingEnvironmentHelper.configureLogging("DEBUG", this.getClass().getPackage().getName());
         log = LoggerFactory.getLogger(DefaultJDPImplTest.class);
@@ -56,12 +59,12 @@ public class DefaultJDPImplTest {
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         SlingEnvironmentHelper.tearDown();
     }
 
     @Test
-    public void testJDPCreation() throws Exception {
+    public void testJDPCreation() throws RepositoryException, URISyntaxException {
         String path = "/content/geometrixx/en/jcr:content";
         JcrContentNode node = newInstance(path, JcrContentNode.class);
 
@@ -73,7 +76,7 @@ public class DefaultJDPImplTest {
     }
 
     @Test
-    public void testJDPAnnotationsCreation() throws Exception {
+    public void testJDPAnnotationsCreation() throws RepositoryException, URISyntaxException {
         String path = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node = newInstance(path, JcrContentNode2.class);
 
@@ -91,7 +94,7 @@ public class DefaultJDPImplTest {
     }
 
     @Test
-    public void testJDPAnnotationsCreationToString() throws Exception {
+    public void testJDPAnnotationsCreationToString() throws RepositoryException, URISyntaxException {
         String path = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node = newInstance(path, JcrContentNode2.class);
 
@@ -101,7 +104,7 @@ public class DefaultJDPImplTest {
     }
 
     @Test
-    public void testHashCodeDifferentObjects() throws Exception {
+    public void testHashCodeDifferentObjects() throws RepositoryException, URISyntaxException {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
 
@@ -113,7 +116,7 @@ public class DefaultJDPImplTest {
     }
 
     @Test
-    public void testHashCodeSameObjects() throws Exception {
+    public void testHashCodeSameObjects() throws RepositoryException, URISyntaxException {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
 
@@ -125,7 +128,7 @@ public class DefaultJDPImplTest {
     }
 
     @Test
-    public void testHashCodeSameResourceDifferentInterfaces() throws Exception {
+    public void testHashCodeSameResourceDifferentInterfaces() throws RepositoryException, URISyntaxException {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
 
@@ -140,7 +143,7 @@ public class DefaultJDPImplTest {
     }
 
     @Test
-    public void testEqualsDifferentObjects() throws Exception {
+    public void testEqualsDifferentObjects() throws RepositoryException, URISyntaxException {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
 
@@ -151,7 +154,7 @@ public class DefaultJDPImplTest {
     }
 
     @Test
-    public void testEqualsSameObjects() throws Exception {
+    public void testEqualsSameObjects() throws RepositoryException, URISyntaxException {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
 
@@ -162,7 +165,7 @@ public class DefaultJDPImplTest {
     }
 
     @Test
-    public void testEqualsSameResourceDifferentInterfaces() throws Exception {
+    public void testEqualsSameResourceDifferentInterfaces() throws RepositoryException, URISyntaxException {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
 
@@ -174,7 +177,7 @@ public class DefaultJDPImplTest {
     }
     
     @Test
-    public void testBinaryResource() throws Exception {
+    public void testBinaryResource() throws RepositoryException, URISyntaxException, IOException {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
         
@@ -189,8 +192,22 @@ public class DefaultJDPImplTest {
         
         log.debug("Read {} bytes from GeoCubePDF", byteCount);
     }
-
-    private static <T> T newInstance(String resource, Class<T> t) throws Exception {
+    
+    @Test(expected=UnsupportedOperationException.class)
+    public void testNoPropertyAnnotation() throws RepositoryException, URISyntaxException {
+        String path1 = "/content/geometrixx/en/jcr:content";
+        MyFunkyService node1 = newInstance(path1, MyFunkyService.class);
+        assertTrue("Proxy was instantiated without SlingProperty annotation.", node1 == null);
+    }
+    
+    /***************************************************************************
+     * 
+     * Convenience Methods
+     * 
+     */
+    
+    
+    private static <T> T newInstance(String resource, Class<T> t) throws RepositoryException, URISyntaxException {
         Resource r1 = SlingEnvironmentHelper.getResource(null, null, resource);
         assertTrue("Resource " + resource + " was NULL", r1 != null);
 
@@ -201,6 +218,13 @@ public class DefaultJDPImplTest {
         return rtn;
     }
 
+    
+    /***************************************************************************
+     * 
+     * Sample Sling Proxy Interfaces
+     * 
+     */
+    
     private static interface JcrContentNode {
         
         @SlingProperty
