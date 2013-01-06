@@ -24,6 +24,7 @@ import org.apache.sling.commons.proxy.api.annotations.OSGiService;
 import org.apache.sling.commons.proxy.api.annotations.OSGiServices;
 import com.apache.sling.commons.proxy.core.reflection.Annotations;
 import com.apache.sling.commons.proxy.core.reflection.Classes;
+import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,26 +38,20 @@ import org.slf4j.LoggerFactory;
  */
 public final class DefaultJDPFactoryImpl implements IJDPFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultJDPFactoryImpl.class);
+    private static final Logger LOG = 
+            LoggerFactory.getLogger(DefaultJDPFactoryImpl.class);
 
     public <T> T newInstance(Resource r, Class<T> type) {
-        if (r == null) {
-            throw new NullPointerException("The Resource cannot be NULL.");
-        }
-        if (type == null) {
-            throw new NullPointerException("The Provided Interface cannot be NULL.");
-        }
-        if (!type.isInterface()) {
-            String msg = "Class " + type.getName() + " must be an Interface.";
-            throw new IllegalStateException(msg);
-        }
-
+        validateIsInstantiable(r, type);
+        
         InvocationHandler ih = new ResourceInvocationHandler(r);
-        T rtn = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, ih);
+        T rtn = (T) Proxy.newProxyInstance(type.getClassLoader(), 
+                new Class[]{type}, ih);
 
         Set<Class> interfaces = Classes.getInterfaces(type);
         if (interfaces.size() > 0) {
-            Set<OSGiService> osgisvcs = getOSGiServiceAnnotations(type, interfaces);
+            Set<OSGiService> osgisvcs = 
+                    getOSGiServiceAnnotations(type, interfaces);
 
             if (osgisvcs.size() > 0) {
                 Set<Class> svcIntfcs = toServiceInterfaces(osgisvcs);
@@ -65,6 +60,26 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
         }
 
         return rtn;
+    }
+    
+    private static <T> void validateIsInstantiable(Resource r, Class<T> type) {
+        if (r == null) {
+            String msg = "The Resource cannot be NULL.";
+            throw new NullPointerException(msg);
+        }
+        if (type == null) {
+            String msg = "The Provided Interface cannot be NULL.";
+            throw new NullPointerException(msg);
+        }
+        if (!type.isInterface()) {
+            String msg = "Class " + type.getName() + " must be an Interface.";
+            throw new UnsupportedOperationException(msg);
+        }
+        if (! Annotations.hasMethodAnnotation(type, SlingProperty.class)) {
+            String msg = "Interface " + type.getName() + " must have at least "+
+                    "one Method with a @SlingProperty annotation.";
+            throw new UnsupportedOperationException(msg);
+        }
     }
 
     /**
@@ -75,7 +90,8 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
      * @return Set<OSGiService> - all defined OSGiService annotations regardless
      * if they are defined directly or within @OSGiServices
      */
-    private static final Set<OSGiService> getOSGiServiceAnnotations(Class type, Set<Class> interfaces) {
+    private static final Set<OSGiService> getOSGiServiceAnnotations(Class type, 
+            Set<Class> interfaces) {
         Set<OSGiService> services = new java.util.HashSet<OSGiService>();
 
         Set<OSGiServices> anns = Annotations.get(type, OSGiServices.class);
@@ -95,17 +111,23 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
         Set<OSGiService> rtn = new java.util.HashSet<OSGiService>();
         for (OSGiService s : services) {
             if (s.service() == null) {
-                LOG.warn("Interface {} was annotated with OSGiService, but it's Service value was NULL", type.getName());
+                String msg = "Interface {} was annotated with OSGiService, " +
+                        "but it's Service value was NULL";
+                LOG.warn(msg, type.getName());
                 continue;
             }
             if (s.service() != Void.class) {
-                LOG.warn("Interface {} was annotated with OSGiService, but it's Service value was {}", type.getName(), Void.class.getName());
+                String msg = "Interface {} was annotated with OSGiService, " +
+                        "but it's Service value was {}";
+                LOG.warn(msg, type.getName(), Void.class.getName());
                 continue;
             }
             if (interfaces.contains(s.service())) {
                 rtn.add(s);
             } else {
-                LOG.warn("Interface {} was annotated with OSGiService, but it did not extend interface {}", type.getName(), s.service().getName());
+                String msg = "Interface {} was annotated with OSGiService, " +
+                        "but it did not extend interface {}";
+                LOG.warn(msg, type.getName(), s.service().getName());
             }
         }
 

@@ -16,6 +16,7 @@
 package com.apache.sling.commons.proxy.core.reflection;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 /**
@@ -32,6 +33,8 @@ public final class Annotations {
     }
 
     /**
+     * For the given Class 'clazz', find all of the annotations on the Class 
+     * that are of the given Annotation type 'annType'.
      * 
      * @param <T> - <T extends Annotation> - Defines generic type T to be a 
      * subtype of Annotation
@@ -54,5 +57,34 @@ public final class Annotations {
         }
 
         return set;
+    }
+    
+    /**
+     * For the given Class'clazz' determine if it has at least one method 
+     * containing an Annotation of type or subclass of type 'annType'.
+     * 
+     * @param <T> - <T extends Annotation> - Defines generic type T to be a 
+     * subtype of Annotation
+     * @param clazz Class - the Class to get annotations from
+     * @param annType Class<T> - the annotation types to get from Class 'clazz'
+     * @return TRUE if it does, FALSE otherwise
+     */
+    public static <T extends Annotation> boolean
+            hasMethodAnnotation(Class clazz, Class<T> annType) {
+        Method[] ma = clazz.getMethods();
+        if (ma == null) return false;
+        
+        for (Method m : ma) {
+            Annotation[] ana = m.getAnnotations();
+            if (ana == null) continue;
+            
+            for (Annotation a : ana) {
+                if (annType.isAssignableFrom(a.getClass())) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 }
