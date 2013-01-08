@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apache.sling.commons.proxy.core.lang;
+package org.apache.sling.commons.proxy.core.lang;
 
 /**
  * @author MJKelleher - Dec 26, 2012 2:27:23 PM

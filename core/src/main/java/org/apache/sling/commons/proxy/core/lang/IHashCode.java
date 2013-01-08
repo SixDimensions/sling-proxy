@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Apache Software Foundation.
+ * Copyright 2012 Six Dimensions.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.apache.sling.commons.proxy.core.reflection;
-
-import java.lang.annotation.Annotation;
+package org.apache.sling.commons.proxy.core.lang;
 
 /**
-* @author MJKelleher - Jan 7, 2013 10:58:40 PM
+ * @author MJKelleher - Dec 26, 2012 1:38:53 PM
  *
- * Apache Sling Proxy Core
+ * proxy-poc
  *
  *
- * com.apache.sling.commons.proxy.core.reflection.IAnnotationVisitor
+ * org.apache.sling.commons.reflection.IHashCode
  */
-public interface IAnnotationVisitor<T extends Annotation> {
-    void visit(T t);
+public interface IHashCode {
+
+    int hashCode(Object obj);
 }

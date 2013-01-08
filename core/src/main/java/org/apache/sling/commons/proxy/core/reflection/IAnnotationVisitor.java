@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Six Dimensions.
+ * Copyright 2013 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apache.sling.commons.proxy.core.lang;
+
+package org.apache.sling.commons.proxy.core.reflection;
+
+import java.lang.annotation.Annotation;
 
 /**
+* @author MJKelleher - Jan 7, 2013 10:58:40 PM
  *
- * @author MJKelleher - Dec 28, 2012 4:15:04 PM
- *
- * proxy-poc
+ * Apache Sling Proxy Core
  *
  *
- * org.apache.sling.commons.reflection.IToString
+ * com.apache.sling.commons.proxy.core.reflection.IAnnotationVisitor
  */
-public interface IToString {
-
-    String toString(Object obj);
+public interface IAnnotationVisitor<T extends Annotation> {
+    void visit(T t);
 }

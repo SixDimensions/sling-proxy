@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apache.sling.commons.proxy.core.reflection;
+package org.apache.sling.commons.proxy.core.reflection;
 
+import org.apache.sling.commons.proxy.core.reflection.IAnnotationVisitor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;

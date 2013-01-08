@@ -22,9 +22,9 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.api.IJDPFactory;
 import org.apache.sling.commons.proxy.api.annotations.OSGiService;
 import org.apache.sling.commons.proxy.api.annotations.OSGiServices;
-import com.apache.sling.commons.proxy.core.reflection.Annotations;
-import com.apache.sling.commons.proxy.core.reflection.Classes;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
+import org.apache.sling.commons.proxy.core.reflection.Annotations;
+import org.apache.sling.commons.proxy.core.reflection.Classes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

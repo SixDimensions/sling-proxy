@@ -23,11 +23,12 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import org.apache.sling.api.resource.Resource;
-import com.apache.sling.commons.proxy.core.lang.DefaultHashCodeImpl;
-import com.apache.sling.commons.proxy.core.lang.GetMethodToStringImpl;
-import com.apache.sling.commons.proxy.core.lang.IEquals;
-import com.apache.sling.commons.proxy.core.lang.IHashCode;
-import com.apache.sling.commons.proxy.core.lang.PrimeNumber;
+import org.apache.sling.commons.proxy.core.lang.DefaultHashCodeImpl;
+import org.apache.sling.commons.proxy.core.lang.GetMethodToStringImpl;
+import org.apache.sling.commons.proxy.core.lang.IEquals;
+import org.apache.sling.commons.proxy.core.lang.IHashCode;
+import org.apache.sling.commons.proxy.core.lang.PrimeNumber;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;

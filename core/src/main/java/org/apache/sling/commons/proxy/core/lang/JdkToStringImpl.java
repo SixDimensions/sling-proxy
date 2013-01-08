@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apache.sling.commons.proxy.core.lang;
+package org.apache.sling.commons.proxy.core.lang;
 
-import com.apache.sling.commons.proxy.core.lang.IToString;
 import java.lang.reflect.Method;
+
+import org.apache.sling.commons.proxy.core.lang.IToString;
 
 /**
  * @author MJKelleher - Dec 25, 2012 3:12:05 PM

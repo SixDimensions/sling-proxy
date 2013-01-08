@@ -17,13 +17,11 @@
 package org.apache.sling.commons.proxy.core.impl;
 
 
-import com.apache.sling.commons.proxy.core.reflection.Annotations;
-import com.apache.sling.commons.proxy.core.reflection.IAnnotationVisitor;
-import java.lang.annotation.Annotation;
+import org.apache.sling.commons.proxy.core.reflection.Annotations;
+import org.apache.sling.commons.proxy.core.reflection.IAnnotationVisitor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Set;
 import org.apache.sling.commons.proxy.api.annotations.OSGiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

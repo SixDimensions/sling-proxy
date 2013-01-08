@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apache.sling.commons.proxy.core.lang;
+package org.apache.sling.commons.proxy.core.lang;
 
-import com.apache.sling.commons.proxy.core.lang.IHashCode;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -24,7 +23,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import com.apache.sling.commons.proxy.core.reflection.Classes;
+
+import org.apache.sling.commons.proxy.core.lang.IHashCode;
+import org.apache.sling.commons.proxy.core.reflection.Classes;
 
 /**
  * @author MJKelleher - Dec 26, 2012 1:46:08 PM
