@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apache.sling.commons.proxy.core.lang;
+package org.apache.sling.commons.proxy.core.lang;
 
 /**
- * @author MJKelleher  - Dec 27, 2012 12:57:35 AM 
+ * @author MJKelleher - Dec 26, 2012 1:38:53 PM
  *
  * proxy-poc
  *
  *
- * org.apache.sling.commons.reflection.IEquals
+ * org.apache.sling.commons.reflection.IHashCode
  */
-public interface IEquals {
-    boolean equals(Object o1, Object o2);
+public interface IHashCode {
+
+    int hashCode(Object obj);
 }
