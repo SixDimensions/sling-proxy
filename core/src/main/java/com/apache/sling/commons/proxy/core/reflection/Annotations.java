@@ -40,18 +40,32 @@ public final class Annotations {
      * subtype of Annotation
      * @param clazz Class - the Class to get annotations from
      * @param annType Class<T> - the annotation types to get from Class 'clazz'
+     * @param visitor IAnnotationVisitor<T> - optional list of Annotation 
+     * visitors that will perform some operation on each Annotation as its found.
+     * Or this is completely ignored if there are no Visitors.  Each visitor 
+     * is required to handle their own Exception.  This method will swallow any
+     * Exceptions caused by a runaway Visitor.
      * @return Set<T> - The set of requested annotation Types assigned to the 
      * given Class
      */
     public static <T extends Annotation> Set<T> get(Class clazz,
-            Class<T> annType) {
+            Class<T> annType, IAnnotationVisitor<T>... visitor) {
         java.util.HashSet<T> set = new java.util.HashSet<T>();
-
+        
+        int size = (visitor != null ? visitor.length : -1);
+        
         Annotation[] anns = clazz.getAnnotations();
         if (anns != null) {
             for (Annotation ann : anns) {
                 if (ann.getClass().isAssignableFrom(annType)) {
-                    set.add((T) ann);
+                    T t = (T) ann;
+                    set.add(t);
+                    for (int ndx = 0 ; ndx < size ; ndx++) {
+                        try {
+                            visitor[ndx].visit(t);
+                        } catch (Exception ex) {
+                        }
+                    }
                 }
             }
         }

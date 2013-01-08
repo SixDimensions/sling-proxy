@@ -143,16 +143,12 @@
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.commons.proxy.api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <type>bundle</type>
-            <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.commons.proxy.core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <type>bundle</type>
-            <scope>test</scope>
         </dependency>
         
         <!-- 
