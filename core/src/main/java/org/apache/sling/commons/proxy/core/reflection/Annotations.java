@@ -26,7 +26,7 @@ import java.util.Set;
  * proxy-poc
  *
  *
- * org.apache.sling.commons.reflection.Annotations
+ * org.apache.sling.commons.proxy.core.reflection.Annotations
  */
 public final class Annotations {
 
