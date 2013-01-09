@@ -18,6 +18,7 @@ package org.apache.sling.commons.proxy.core.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -32,6 +33,7 @@ import org.apache.sling.commons.proxy.core.lang.PrimeNumber;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
+import org.apache.sling.api.resource.ValueMap;
 
 /**
  * @author MJKelleher - Dec 23, 2012 11:27:36 PM
@@ -48,7 +50,8 @@ final class ResourceInvocationHandler implements InvocationHandler {
     @SuppressWarnings("rawtypes")
     private final Set<Class> denyInvocations;
     private final int denyInvocationSize;
-
+    
+    private final Map<String, Object> cache;
     /**
      * Create a new ResourceInvocationHandler allowing invocation of all Methods
      * that this InvocationHandler represents
@@ -65,6 +68,7 @@ final class ResourceInvocationHandler implements InvocationHandler {
         this.node = r.adaptTo(Node.class);
         this.denyInvocationSize = (denyInvocations != null ? denyInvocations.size() : -1);
         this.denyInvocations = (this.denyInvocationSize > 0 ? Collections.unmodifiableSet(denyInvocations) : null);
+        this.cache = new java.util.HashMap<String, Object>();
     }
 
     /**
@@ -129,24 +133,28 @@ final class ResourceInvocationHandler implements InvocationHandler {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private Object handleGet(InvokedTO to) throws Throwable {
-        Property p;
-        try {
-            if (to.propertyName.startsWith("/")) {
-                p = (Property) node.getSession().getItem(to.propertyName);
+        Object objReturn;
+        if (cache.containsKey(to.propertyName)) {
+            objReturn = cache.get(to.propertyName);
+        } else {
+            ValueMap vm;
+            if (to.path == null) {
+                vm = r.adaptTo(ValueMap.class);
             } else {
-                p = node.getProperty(to.propertyName);
+                Resource rsrc;
+                if (to.isAbsolute()) {
+                     rsrc = r.getResourceResolver().getResource(to.path);
+                } else {
+                    rsrc = r.getResourceResolver().getResource(r, to.path);
+                }
+                vm = rsrc.adaptTo(ValueMap.class);
             }
-        } catch (PathNotFoundException ex) {
-            return null;
+            objReturn = vm.get(to.name, to.method.getReturnType());
+            cache.put(to.propertyName, objReturn);
         }
-
-        Class type = to.method.getReturnType();
-        if (isMultiple(p)) {
-            return PropertyHandler.castPropertyArray(p, type);
-        }
-        return PropertyHandler.castProperty(p, type);
+        return objReturn;
     }
-
+    
     private boolean isMultiple(Property p) throws RepositoryException {
         try {
             Value v = p.getValue();

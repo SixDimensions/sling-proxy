@@ -18,6 +18,7 @@ package org.apache.sling.commons.proxy.core.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import static org.junit.Assert.*;
 import java.util.Date;
 import javax.jcr.RepositoryException;
@@ -26,10 +27,9 @@ import org.apache.sling.commons.proxy.core.SlingEnvironmentHelper;
 import org.apache.sling.commons.proxy.api.IJDPFactory;
 import org.apache.sling.commons.proxy.api.annotations.OSGiService;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
-import org.apache.sling.commons.proxy.core.impl.DefaultJDPFactoryImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,16 +43,20 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultJDPImplTest {
 
-    private Logger log;
+    @Rule
+    public static TestWatcher watch;
+    
+    private static Logger log;
 
     /**
      * @throws java.lang.Exception
      */
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUpBeforeClass() {
         SlingEnvironmentHelper.setUp();
-        SlingEnvironmentHelper.configureLogging("DEBUG", this.getClass().getPackage().getName());
+        SlingEnvironmentHelper.configureLogging("DEBUG", DefaultJDPImplTest.class.getPackage().getName());
         log = LoggerFactory.getLogger(DefaultJDPImplTest.class);
+        watch = SlingEnvironmentHelper.getTestWatcher(log);
     }
 
     /**
@@ -77,6 +81,7 @@ public class DefaultJDPImplTest {
 
     @Test
     public void testJDPAnnotationsCreation() throws RepositoryException, URISyntaxException {
+        log.debug("");
         String path = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node = newInstance(path, JcrContentNode2.class);
 
@@ -175,38 +180,37 @@ public class DefaultJDPImplTest {
 
         assertTrue("The 2 Objects for the same resource but different JDP Interfaces were equal and should not be", !node1.equals(node3));
     }
-    
+
     @Test
     public void testBinaryResource() throws RepositoryException, URISyntaxException, IOException {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
-        
+
         InputStream ips = node1.getGeoCubePDF();
         assertTrue("The GeoCube InputStream was NULL.", ips != null);
-        
+
         int byteCount = 0;
-        for (int read=0; (read = ips.read()) != -1 ; ) {
+        for (int read = 0; (read = ips.read()) != -1;) {
             byteCount++;
         }
         ips.close();
-        
+
         log.debug("Read {} bytes from GeoCubePDF", byteCount);
     }
-    
-    @Test(expected=UnsupportedOperationException.class)
+
+    @Test(expected = UnsupportedOperationException.class)
     public void testNoPropertyAnnotation() throws RepositoryException, URISyntaxException {
         String path1 = "/content/geometrixx/en/jcr:content";
         MyFunkyService node1 = newInstance(path1, MyFunkyService.class);
         assertTrue("Proxy was instantiated without SlingProperty annotation.", node1 == null);
     }
-    
-    /***************************************************************************
-     * 
+
+    /**
+     * *************************************************************************
+     *
      * Convenience Methods
-     * 
+     *
      */
-    
-    
     private static <T> T newInstance(String resource, Class<T> t) throws RepositoryException, URISyntaxException {
         Resource r1 = SlingEnvironmentHelper.getResource(null, null, resource);
         assertTrue("Resource " + resource + " was NULL", r1 != null);
@@ -218,18 +222,17 @@ public class DefaultJDPImplTest {
         return rtn;
     }
 
-    
-    /***************************************************************************
-     * 
+    /**
+     * *************************************************************************
+     *
      * Sample Sling Proxy Interfaces
-     * 
+     *
      */
-    
     private static interface JcrContentNode {
-        
+
         @SlingProperty
         Date getCq_lastReplicated();
-        
+
         @SlingProperty
         String getJcr_title();
     }
@@ -248,8 +251,8 @@ public class DefaultJDPImplTest {
 
         @SlingProperty(path = "par/image", name = "fileReference")
         String getImagePath();
-        
-        @SlingProperty(path="/content/dam/geometrixx/documents/GeoCube_Datasheet.pdf/jcr:content/renditions/original/jcr:content", name="jcr:data")
+
+        @SlingProperty(path = "/content/dam/geometrixx/documents/GeoCube_Datasheet.pdf/jcr:content/renditions/original/jcr:content", name = "jcr:data")
         InputStream getGeoCubePDF();
     }
 

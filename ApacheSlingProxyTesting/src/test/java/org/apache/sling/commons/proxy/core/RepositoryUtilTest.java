@@ -15,18 +15,21 @@
  */
 package org.apache.sling.commons.proxy.core;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import static org.junit.Assert.assertTrue;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceUtil;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.resource.*;
+import org.apache.sling.commons.proxy.core.impl.ServiceInvocationHandler;
 import org.apache.sling.jcr.resource.internal.JcrResourceResolverFactoryImpl;
 import org.apache.sling.jcr.resource.internal.helper.jcr.JcrResourceProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author MJKelleher - Dec 17, 2012 11:11:08 PM
@@ -37,10 +40,13 @@ import org.junit.Test;
  * org.apache.sling.commons.proxy.poc.RepositoryUtil
  */
 public final class RepositoryUtilTest {
+    private Logger log;
 
     @Before
     public void setUp() throws Exception {
         SlingEnvironmentHelper.setUp();
+        SlingEnvironmentHelper.configureLogging("DEBUG", this.getClass().getName());
+        log = LoggerFactory.getLogger(RepositoryUtilTest.class);
     }
 
     @After
@@ -100,5 +106,30 @@ public final class RepositoryUtilTest {
         assertTrue("Resource is null", r != null);
         Node n = r.adaptTo(Node.class);
         n.getSession().logout();
+    }
+    
+    @Test
+    public void testResourceMetaData() throws RepositoryException, URISyntaxException, IOException {
+        String path = "/content/dam/geometrixx/documents/GeoPyramid_Datasheet.pdf/jcr:content/renditions/original/jcr:content";
+        Resource r = SlingEnvironmentHelper.getResource(null, null, path);
+        assertTrue("Resource is null", r != null);
+        
+        ResourceMetadata rm = r.getResourceMetadata();
+        for (String key : rm.keySet()) {
+            log.debug("Key {} Value {}", key, rm.get(key));
+        }
+        
+        ValueMap vm = r.adaptTo(ValueMap.class);
+        
+        java.io.InputStream ips = vm.get("jcr:data", java.io.InputStream.class);
+        assertTrue("InputStream was NULL", ips != null);
+        
+        int count = 0;
+        for (int byt = -1 ; (byt = ips.read()) > -1 ; ) {
+            count++;
+        }
+        ips.close();
+        log.debug("Number of bytes read was {}", count);
+        assertTrue("Did not read ANY bytes, and wrong length ", count > 1);
     }
 }

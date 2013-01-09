@@ -37,15 +37,19 @@ final class InvokedTO {
     final Object proxy;
     final Method method;
     final Object[] args;
+    final String path;
+    final String name;
     final String propertyName;
     final MethodType mt;
 
     private InvokedTO(Object proxy, Method method, Object[] args,
-            String propertyName, MethodType mt) {
+            String path, String name, MethodType mt) {
         this.proxy = proxy;
         this.method = method;
         this.args = args;
-        this.propertyName = propertyName;
+        this.path = path;
+        this.name = name;
+        this.propertyName = (path != null ? path + "/" : "") + name;
         this.mt = mt;
     }
 
@@ -66,7 +70,10 @@ final class InvokedTO {
             String msg = "Could not determine Bean Property name either from @SlingProperty annotation or the JavaBean method name.";
             throw new IllegalStateException(msg);
         }
-        return new InvokedTO(proxy, method, args, property, mt);
+        int ndx = property.lastIndexOf("/");
+        String path = (ndx > -1 ? property.substring(0, ndx) : null);
+        String name = (ndx > -1 ? property.substring(ndx + 1) : property);
+        return new InvokedTO(proxy, method, args, path, name, mt);
     }
 
     /**
@@ -75,15 +82,58 @@ final class InvokedTO {
      *
      *
      */
+    /**
+     * Determines if the Property represented by this method Invocation is an
+     * absolute path reference, starts with a /.
+     * @return TRUE if the Property starts with /, FALSE otherwise
+     */
+    public boolean isAbsolute() {
+        return path != null && path.startsWith("/");
+    }
+    /**
+     * Determines if the Property represented by this method Invocation is a
+     * relative path reference, that is a descendant of the backing Resource
+     * @return TRUE if the Property contains / but does not start with /, FALSE
+     * otherwise
+     */
+    public boolean isRelative() {
+        return path != null && ! isAbsolute() && path.contains("/");
+    }
+    /**
+     * Determines if the Property represented by this method Invocation is a
+     * direct reference, that is stored immediately within the backing Resource.
+     * @return TRUE if the Property is stored directly within the Resource, 
+     * FALSE otherwise
+     */
+    public boolean isDirect() {
+        return ! isRelative();
+    }
+    
+    /**
+     * Determines if the current Invocation is of type <code>_mt</code>
+     * @param _mt MethodType
+     * @return TRUE if it is, FALSE otherwise
+     */
     public boolean isType(MethodType _mt) {
         return mt == _mt;
     }
-
+    
+    /**
+     * Determines if the current Invocation is a 'Getter' method - that is a 
+     * method that starts with 'get' or 'is', has no arguments, and returns a
+     * value.
+     * @return TRUE if it is a 'get' or 'is' method, FALSE otherwise
+     */
     public boolean isGetter() {
         return MethodType.contains(new MethodType[]{MethodType.JavaBeanIs,
                     MethodType.JavaBeanGet}, mt);
     }
-
+    
+    /**
+     * Determines if the current Invocation is named in the JavaBeans style, '
+     * that is 'get', 'is' or 'set'.
+     * @return 
+     */
     public boolean isJavaBean() {
         return MethodType.contains(new MethodType[]{MethodType.JavaBeanIs,
                     MethodType.JavaBeanGet, MethodType.JavaBeanSet}, mt);

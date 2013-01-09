@@ -17,6 +17,7 @@ package org.apache.sling.commons.proxy.core;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Dictionary;
 import javax.jcr.Credentials;
 import javax.jcr.Repository;
@@ -28,6 +29,9 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.commons.log.internal.config.ConfigurationException;
 import org.apache.sling.jcr.resource.internal.JcrResourceResolverFactoryImpl;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -100,7 +104,34 @@ public final class SlingEnvironmentHelper {
     private static org.apache.sling.commons.log.internal.slf4j.LogConfigManager getConfigManager() {
         return (org.apache.sling.commons.log.internal.slf4j.LogConfigManager) LoggerFactory.getILoggerFactory();
     }
+    
+    public static final TestWatcher getTestWatcher(Logger _log) {
+        return new TestWatcher() {
+            private Logger log;
 
+            @Override
+            protected void succeeded(Description description) {
+                log.debug("Success: {}\n\n{}\n\n", description, getSeparator());
+            }
+
+            @Override
+            protected void starting(Description description) {
+                log.debug("Running : \n{}", description);
+            }
+
+            private String getSeparator() {
+                char[] ca = new char[80];
+                Arrays.fill(ca, '*');
+                return String.valueOf(ca);
+            }
+
+            private TestWatcher setLogger(Logger _log) {
+                log = _log;
+                return this;
+            }
+        }.setLogger(_log);
+    }
+    
     public static final Resource getResource(String user, String password,
             String resource) throws RepositoryException, URISyntaxException {
         Session s = newSession(user, password);
