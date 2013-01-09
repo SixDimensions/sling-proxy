@@ -27,9 +27,11 @@ import org.apache.sling.commons.proxy.core.SlingEnvironmentHelper;
 import org.apache.sling.commons.proxy.api.IJDPFactory;
 import org.apache.sling.commons.proxy.api.annotations.OSGiService;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
-import org.junit.*;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

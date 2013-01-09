@@ -16,14 +16,13 @@
 package org.apache.sling.commons.proxy.core;
 
 import org.apache.sling.commons.proxy.core.impl.DefaultJDPImplTest;
-import org.apache.sling.commons.proxy.core.impl.PropertyHandlerTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ RepositoryUtilTest.class , DefaultJDPImplTest.class , PropertyHandlerTest.class })
+@SuiteClasses({ RepositoryUtilTest.class , DefaultJDPImplTest.class })
 public class AllTests {
     
     @BeforeClass 

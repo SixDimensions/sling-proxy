@@ -22,7 +22,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import org.apache.sling.api.resource.*;
-import org.apache.sling.commons.proxy.core.impl.ServiceInvocationHandler;
 import org.apache.sling.jcr.resource.internal.JcrResourceResolverFactoryImpl;
 import org.apache.sling.jcr.resource.internal.helper.jcr.JcrResourceProvider;
 import org.junit.After;
