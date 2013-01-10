@@ -68,7 +68,7 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
             throw new NullPointerException(msg);
         }
         if (type == null) {
-            String msg = "The Provided Interface cannot be NULL.";
+            String msg = "The Provided SlingBean Interface cannot be NULL.";
             throw new NullPointerException(msg);
         }
         if (!type.isInterface()) {
@@ -95,9 +95,7 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
         Set<OSGiService> services = new java.util.HashSet<OSGiService>();
 
         Set<OSGiServices> anns = Annotations.get(type, OSGiServices.class);
-        if (anns.size() < 1) {
-            services.addAll(Annotations.get(type, OSGiService.class));
-        } else {
+        if (anns.size() > 0) {
             for (OSGiServices svcs : anns) {
                 OSGiService[] sa = svcs.value();
                 if (sa != null) {

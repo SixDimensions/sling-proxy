@@ -131,6 +131,13 @@ final class ResourceInvocationHandler implements InvocationHandler {
      *
      *
      */
+    /**
+     * @TODO:  refactor to also cache the ValueMap for a given path?
+     * 
+     * @param to
+     * @return
+     * @throws Throwable 
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private Object handleGet(InvokedTO to) throws Throwable {
         Object objReturn;
@@ -153,14 +160,5 @@ final class ResourceInvocationHandler implements InvocationHandler {
             cache.put(to.propertyName, objReturn);
         }
         return objReturn;
-    }
-    
-    private boolean isMultiple(Property p) throws RepositoryException {
-        try {
-            Value v = p.getValue();
-            return false;
-        } catch (ValueFormatException vfex) {
-        }
-        return true;
     }
 }

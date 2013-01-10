@@ -20,6 +20,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Set;
+import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
+import org.apache.sling.commons.proxy.core.impl.ProxyBundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author MJKelleher - Dec 25, 2012 2:59:42 PM
@@ -30,7 +36,7 @@ import java.util.Set;
  * org.apache.sling.commons.proxy.poc.api.reflection.Classes
  */
 public final class Classes {
-
+    private static final Logger LOG = LoggerFactory.getLogger(Classes.class);
     private Classes() {
     }
 
@@ -156,7 +162,58 @@ public final class Classes {
         }
         return set.size() < 1;
     }
-
+    
+    /**
+     * <p>
+     * Creates a new instance of <code>impl</code> that implements interface 
+     * <code>rtnType</code>.  <code>impl</code> cannot be an Interface, and 
+     * <code>rtnType</code> should be an interface, but does not necessarily 
+     * have to be.
+     * </p>
+     * <p>
+     * <code>impl</code> must be public and contain a no args public 
+     * constructor, or an Exception will be thrown.
+     * </p>
+     * @param <T> The Implementation class 
+     * @param <R> The Interface the Implementation implements
+     * @param impl T
+     * @param rtnType R
+     * @return T the new instance
+     */
+    public static <T, R> T newInstance(Class<T> impl, Class<R> rtnType)
+            throws InstantiationException, IllegalAccessException {
+        if (impl.isInterface()) {
+            String msg = "Implementation " + impl.getName() + 
+                    "cannot be an interface.";
+            throw new IllegalStateException(msg);
+        }
+        if (! rtnType.isAssignableFrom(impl)) {
+            String msg = "Implementation " + impl.getName() + " does not " +
+                    "implement Class " + rtnType.getName() + ".";
+            throw new IllegalStateException(msg);
+        }
+        T t = impl.newInstance();
+        return t;
+    }
+    
+    private static DynamicClassLoaderManager getClassLoader() throws NullPointerException {
+        BundleContext bctx = ProxyBundleActivator.getBundleContext();
+        ServiceReference sr = bctx.getServiceReference(DynamicClassLoaderManager.class.getName());
+        if (sr == null) {
+            String msg = "Could not find the DynamicClassLoaderManager " +
+                    "ServiceReference.";
+            throw new NullPointerException(msg);
+        }
+        
+        DynamicClassLoaderManager dclm = (DynamicClassLoaderManager) bctx.getService(sr);
+        if (dclm == null) {
+            String msg = "Found the DynamicClassLoaderManager ServiceReference"+
+                    " but the Service was null.";
+            throw new NullPointerException(msg);
+        }
+        return dclm;
+    }
+    
     private static final int size(Class[] ca) {
         return (ca != null ? ca.length : -1);
     }

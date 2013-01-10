@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 import org.apache.sling.commons.proxy.api.annotations.OSGiService;
+import org.apache.sling.commons.proxy.core.reflection.Classes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,26 +64,42 @@ public final class ServiceInvocationHandler implements InvocationHandler {
                 " not supported.");
     }
     
-    private Object resolveService(Class interfce) {
-        AnnotationResolver ar = new AnnotationResolver(interfce);
+    private Object resolveService(Class interfce) 
+            throws InstantiationException, IllegalAccessException {
+        FindFirstServiceOfType ar = new FindFirstServiceOfType(interfce);
         Annotations.get(proxyInterface, OSGiService.class, ar);
-        if (ar.getAnnotation() == null) {
+        OSGiService svcAnnotation = ar.getAnnotation();
+        if (svcAnnotation == null) {
             String msg = "Could not find OSGiService annotation for Interface "+
                     interfce.getName() + ".";
             throw new IllegalStateException(msg);
         }
         
-        /**
-         * @TODO: UNCOMPLETED!!
-         */
-        return null;
+        if (isDefinedAsOSGiService(svcAnnotation)) {
+            //** @TODO  UNCOMPLETED
+            throw new UnsupportedOperationException("NOT YET SUPPORTED");
+        } else if (svcAnnotation.implementation() != null) {
+            return Classes.newInstance(svcAnnotation.implementation(), svcAnnotation.service());
+        }
+        String msg = "Interface " + interfce.getName() + " has an OSGiService "+
+                "Annotation, but had neither an OSGi Service or a Static " +
+                "Implementation defined for it.";
+        throw new UnsupportedOperationException(msg);
     }
     
-    private static final class AnnotationResolver implements IAnnotationVisitor<OSGiService> {
+    private static boolean isDefinedAsOSGiService(OSGiService annot) {
+        return length(annot.pid()) > 0 || length(annot.filter()) > 0;
+    }
+    
+    private static int length(String str) {
+        return (str != null ? str.trim().length() : -1);
+    }
+    
+    private static final class FindFirstServiceOfType implements IAnnotationVisitor<OSGiService> {
         private final Class serviceInterface;
         private OSGiService annotation;
         
-        AnnotationResolver(Class serviceInterface) {
+        FindFirstServiceOfType(Class serviceInterface) {
             this.serviceInterface = serviceInterface;
         }
         public OSGiService getAnnotation() {

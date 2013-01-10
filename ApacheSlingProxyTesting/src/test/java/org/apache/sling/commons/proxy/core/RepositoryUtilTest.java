@@ -108,7 +108,7 @@ public final class RepositoryUtilTest {
     }
     
     @Test
-    public void testResourceMetaData() throws RepositoryException, URISyntaxException, IOException {
+    public void testResourceMetaData() throws RepositoryException, URISyntaxException, IOException {        
         String path = "/content/dam/geometrixx/documents/GeoPyramid_Datasheet.pdf/jcr:content/renditions/original/jcr:content";
         Resource r = SlingEnvironmentHelper.getResource(null, null, path);
         assertTrue("Resource is null", r != null);
