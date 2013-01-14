@@ -18,7 +18,6 @@ package org.apache.sling.commons.proxy.core.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import static org.junit.Assert.*;
 import java.util.Date;
 import javax.jcr.RepositoryException;
@@ -206,7 +205,15 @@ public class DefaultJDPImplTest {
         MyFunkyService node1 = newInstance(path1, MyFunkyService.class);
         assertTrue("Proxy was instantiated without SlingProperty annotation.", node1 == null);
     }
-
+    
+    @Test
+    public void testServiceResolutionAndMethodInvocation() throws RepositoryException, URISyntaxException {
+        String path1 = "/content/geometrixx/en/jcr:content";
+        JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
+        
+        assertTrue("Return type for whatIsTheResourcePath did not match", "DNE".equals(node1.whatIsTheResourcePath()));
+        assertTrue("Return type for calculateDepth did not match", -13 == node1.calculateDepth() );
+    }
     /**
      * *************************************************************************
      *
@@ -265,16 +272,16 @@ public class DefaultJDPImplTest {
         int calculateDepth();
     }
 
-    private static final class MyFunkyServiceImpl implements MyFunkyService {
-
+    public static final class MyFunkyServiceImpl implements MyFunkyService {
+        
         private JcrContentNode2 instance;
 
         public String whatIsTheResourcePath() {
-            return null;
+            return "DNE";
         }
 
         public int calculateDepth() {
-            return -1;
+            return -13;
         }
     }
 }

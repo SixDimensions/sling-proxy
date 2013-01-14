@@ -16,8 +16,6 @@
 package org.apache.sling.commons.proxy.core.impl;
 
 import java.lang.reflect.Method;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 
 /**
@@ -33,6 +31,7 @@ import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
  * org.apache.sling.commons.proxy.poc.jdp.InvokedTO
  */
 final class InvokedTO {
+    public static final InvokedTO UNKNOWN = new InvokedTO(null, null, null, null, null, MethodType.Unknown);
 
     final Object proxy;
     final Method method;
@@ -61,6 +60,15 @@ final class InvokedTO {
      */
     public static InvokedTO newInstance(Object proxy, Method method, Object[] args) {
         MethodType mt = MethodType.getMethodType(method);
+        if (mt == MethodType.Unknown) {
+            /**
+             * An unknown MethodType is likely to be a ServiceInterface Method
+             * Invocation.  The processing below is not valid for 
+             * ServiceInterface Methods.
+             */
+            return UNKNOWN;
+        }
+        
         String property = getNameByAnnotation(method);
         if (property == null || property.length() < 1) {
             property = MethodType.getBeanName(mt, method);

@@ -44,10 +44,7 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
     public <T> T newInstance(Resource r, Class<T> type) {
         validateIsInstantiable(r, type);
         
-        InvocationHandler ih = new ResourceInvocationHandler(r);
-        T rtn = (T) Proxy.newProxyInstance(type.getClassLoader(), 
-                new Class[]{type}, ih);
-
+        InvocationHandler svcIH = null;
         Set<Class> interfaces = Classes.getInterfaces(type);
         if (interfaces.size() > 0) {
             Set<OSGiService> osgisvcs = 
@@ -56,8 +53,15 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
             if (osgisvcs.size() > 0) {
                 Set<Class> svcIntfcs = toServiceInterfaces(osgisvcs);
                 boolean atLeastOneRemoved = interfaces.removeAll(svcIntfcs);
+                if (atLeastOneRemoved) {
+                    svcIH = new ServiceInvocationHandler(type);
+                }
             }
         }
+        
+        InvocationHandler ih = new ResourceInvocationHandler(r, svcIH, null);
+        T rtn = (T) Proxy.newProxyInstance(type.getClassLoader(), 
+                new Class[]{type}, ih);
 
         return rtn;
     }
@@ -86,7 +90,10 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
      * This takes care of both: OSGiServices and OSGiService annotations
      *
      * @param type Class - the JDP Interface to be implemented by the Proxy
-     * @param interfaces - the Interfaces defined on class 'type'
+     * @param interfaces - the Interfaces defined on class 'type' - this is used
+     * to validate that the identified OSGiService annotations found on 
+     * <code>type</code> actually has a corresponding Interface in the Set 
+     * <code>interfaces<code>
      * @return Set<OSGiService> - all defined OSGiService annotations regardless
      * if they are defined directly or within @OSGiServices
      */
@@ -94,9 +101,9 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
             Set<Class> interfaces) {
         Set<OSGiService> services = new java.util.HashSet<OSGiService>();
 
-        Set<OSGiServices> anns = Annotations.get(type, OSGiServices.class);
-        if (anns.size() > 0) {
-            for (OSGiServices svcs : anns) {
+        Set<OSGiServices> anns1 = Annotations.get(type, OSGiServices.class);
+        if (anns1.size() > 0) {
+            for (OSGiServices svcs : anns1) {
                 OSGiService[] sa = svcs.value();
                 if (sa != null) {
                     for (OSGiService s : sa) {
@@ -104,6 +111,10 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
                     }
                 }
             }
+        }
+        Set<OSGiService> anns2 = Annotations.get(type, OSGiService.class);
+        if (anns2 != null && anns2.size() > 0) {
+            services.addAll(anns2);
         }
         
         return returnValidatedServices(type, interfaces, services);
@@ -119,7 +130,7 @@ public final class DefaultJDPFactoryImpl implements IJDPFactory {
                 LOG.warn(msg, type.getName());
                 continue;
             }
-            if (s.service() != Void.class) {
+            if (s.service() == Void.class) {
                 String msg = "Interface {} was annotated with OSGiService, " +
                         "but it's Service value was {}";
                 LOG.warn(msg, type.getName(), Void.class.getName());

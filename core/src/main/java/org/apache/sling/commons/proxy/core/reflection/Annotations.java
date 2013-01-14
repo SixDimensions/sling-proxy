@@ -15,7 +15,6 @@
  */
 package org.apache.sling.commons.proxy.core.reflection;
 
-import org.apache.sling.commons.proxy.core.reflection.IAnnotationVisitor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -58,7 +57,8 @@ public final class Annotations {
         Annotation[] anns = clazz.getAnnotations();
         if (anns != null) {
             for (Annotation ann : anns) {
-                if (ann.getClass().isAssignableFrom(annType)) {
+                Class _annType = ann.annotationType();
+                if (_annType.isAssignableFrom(annType)) {
                     T t = (T) ann;
                     set.add(t);
                     for (int ndx = 0 ; ndx < size ; ndx++) {

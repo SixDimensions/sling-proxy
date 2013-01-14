@@ -52,13 +52,16 @@ public final class ServiceInvocationHandler implements InvocationHandler {
         this.implementations = new java.util.HashMap<Class, Object>();
     }
 
-    public Object invoke(Object o, Method method, Object[] os) throws Throwable {
+    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
         Class intrfce = method.getDeclaringClass();
         Object impl = implementations.get(intrfce);
         if (impl == null) {
-            /**
-             * @TODO: UNCOMPLETED!!
-             */
+            impl = resolveService(intrfce);
+            implementations.put(intrfce, impl);
+        }
+        if (impl != null) {
+            Object rtn = method.invoke(impl, args);
+            return rtn;
         }
         throw new UnsupportedOperationException("Method " + method.getName() + 
                 " not supported.");

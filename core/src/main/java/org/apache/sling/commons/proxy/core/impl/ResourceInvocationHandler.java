@@ -20,19 +20,12 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.core.lang.DefaultHashCodeImpl;
 import org.apache.sling.commons.proxy.core.lang.GetMethodToStringImpl;
 import org.apache.sling.commons.proxy.core.lang.IEquals;
 import org.apache.sling.commons.proxy.core.lang.IHashCode;
 import org.apache.sling.commons.proxy.core.lang.PrimeNumber;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
 import org.apache.sling.api.resource.ValueMap;
 
 /**
@@ -46,7 +39,7 @@ import org.apache.sling.api.resource.ValueMap;
 final class ResourceInvocationHandler implements InvocationHandler {
 
     private final Resource r;
-    private final Node node;
+    private final InvocationHandler serviceInvocationHandler;
     @SuppressWarnings("rawtypes")
     private final Set<Class> denyInvocations;
     private final int denyInvocationSize;
@@ -58,14 +51,13 @@ final class ResourceInvocationHandler implements InvocationHandler {
      *
      * @param r Resource - the
      */
-    ResourceInvocationHandler(Resource r) {
-        this(r, null);
-    }
-
     @SuppressWarnings("rawtypes")
-    ResourceInvocationHandler(Resource r, Set<Class> denyInvocations) {
+    ResourceInvocationHandler(Resource r, 
+            InvocationHandler serviceInvocationHandler, 
+            Set<Class> denyInvocations) {
         this.r = r;
-        this.node = r.adaptTo(Node.class);
+        this.serviceInvocationHandler = serviceInvocationHandler;
+        
         this.denyInvocationSize = (denyInvocations != null ? denyInvocations.size() : -1);
         this.denyInvocations = (this.denyInvocationSize > 0 ? Collections.unmodifiableSet(denyInvocations) : null);
         this.cache = new java.util.HashMap<String, Object>();
@@ -94,7 +86,7 @@ final class ResourceInvocationHandler implements InvocationHandler {
         if (to.isGetter()) {
             return (handleGet(to));
         } else if (to.isType(MethodType.JavaBeanSet)) {
-            return null;
+            throw new UnsupportedOperationException("Method not yet implemented.");
         } else if (to.isType(MethodType.ToString)) {
             return new GetMethodToStringImpl().toString(proxy);
         } else if (to.isType(MethodType.HashCode)) {
@@ -107,6 +99,10 @@ final class ResourceInvocationHandler implements InvocationHandler {
             }
             IEquals ieq = new JDPEqualsImpl();
             return ieq.equals(proxy, args[0]);
+        } else if (InvokedTO.UNKNOWN == to) {
+            if (serviceInvocationHandler != null) {
+                return serviceInvocationHandler.invoke(proxy, method, args);
+            }
         }
         throw new NoSuchMethodException("Method " + method.getName() + " DNE");
     }
