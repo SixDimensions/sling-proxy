@@ -24,6 +24,7 @@ import javax.jcr.RepositoryException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.core.SlingEnvironmentHelper;
 import org.apache.sling.commons.proxy.api.IJDPFactory;
+import org.apache.sling.commons.proxy.api.annotations.InjectField;
 import org.apache.sling.commons.proxy.api.annotations.OSGiService;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 import org.junit.After;
@@ -211,7 +212,7 @@ public class DefaultJDPImplTest {
         String path1 = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
         
-        assertTrue("Return type for whatIsTheResourcePath did not match", "DNE".equals(node1.whatIsTheResourcePath()));
+        assertTrue("Return type for whatIsTheResourcePath did not match", node1.getImagePath().equals(node1.whatIsTheResourcePath()));
         assertTrue("Return type for calculateDepth did not match", -13 == node1.calculateDepth() );
     }
     /**
@@ -274,10 +275,11 @@ public class DefaultJDPImplTest {
 
     public static final class MyFunkyServiceImpl implements MyFunkyService {
         
+        @InjectField
         private JcrContentNode2 instance;
 
         public String whatIsTheResourcePath() {
-            return "DNE";
+            return instance.getImagePath();
         }
 
         public int calculateDepth() {

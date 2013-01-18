@@ -17,9 +17,8 @@ package org.apache.sling.commons.proxy.core.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.lang.reflect.Proxy;
 import java.util.Map;
-import java.util.Set;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.core.lang.DefaultHashCodeImpl;
 import org.apache.sling.commons.proxy.core.lang.GetMethodToStringImpl;
@@ -37,14 +36,29 @@ import org.apache.sling.api.resource.ValueMap;
  * org.apache.sling.commons.proxy.poc.jdp.ResourceInvocationHandler
  */
 final class ResourceInvocationHandler implements InvocationHandler {
-
-    private final Resource r;
-    private final InvocationHandler serviceInvocationHandler;
-    @SuppressWarnings("rawtypes")
-    private final Set<Class> denyInvocations;
-    private final int denyInvocationSize;
     
+    /**
+     * The backing Sling Resource
+     */
+    private final Resource r;
+    /**
+     * Handles Service Method Invocation - non GET/SET/IS Methods
+     */
+    private final InvocationHandler serviceInvocationHandler;
+    /**
+     * This caches all 'get' or 'is' method's return values.  Calling 'set' will
+     * clear that properties cached value.
+     */
     private final Map<String, Object> cache;
+    
+    /**
+     * This is almost the same Object as <code>proxy</code> passed into 
+     * 'invoke(..)', except this one will not have a ServiceInvocationHandler
+     * instance.  This will prevent recursive Service Method calls to itself.
+     */
+    private final Object injectablePxy;
+    
+    
     /**
      * Create a new ResourceInvocationHandler allowing invocation of all Methods
      * that this InvocationHandler represents
@@ -52,15 +66,28 @@ final class ResourceInvocationHandler implements InvocationHandler {
      * @param r Resource - the
      */
     @SuppressWarnings("rawtypes")
-    ResourceInvocationHandler(Resource r, 
-            InvocationHandler serviceInvocationHandler, 
-            Set<Class> denyInvocations) {
+    private ResourceInvocationHandler(Resource r, 
+            InvocationHandler serviceInvocationHandler,
+            Object injectableProxy) {
         this.r = r;
         this.serviceInvocationHandler = serviceInvocationHandler;
-        
-        this.denyInvocationSize = (denyInvocations != null ? denyInvocations.size() : -1);
-        this.denyInvocations = (this.denyInvocationSize > 0 ? Collections.unmodifiableSet(denyInvocations) : null);
         this.cache = new java.util.HashMap<String, Object>();
+        this.injectablePxy = injectableProxy;
+    }
+    
+    public static <T> T newInstance(Class<T> type, Resource r, 
+            InvocationHandler serviceIH) {
+        T injectable = null;
+        if (serviceIH != null) {
+            InvocationHandler injectableIH = new ResourceInvocationHandler(r, null, null);
+            injectable = (T) Proxy.newProxyInstance(type.getClassLoader(), 
+                new Class[] { type } , injectableIH);
+        }
+        
+        InvocationHandler ih = new ResourceInvocationHandler(r, serviceIH, injectable);
+        T rtn = (T) Proxy.newProxyInstance(type.getClassLoader(), 
+                new Class[] { type } , ih);
+        return rtn;
     }
 
     /**
@@ -75,13 +102,7 @@ final class ResourceInvocationHandler implements InvocationHandler {
      */
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
-        if (denyInvocationSize > 0) {
-            if (denyInvocations.contains(method.getDeclaringClass())) {
-                String msg = "Invocation of method " + method.getName()
-                        + " has been denied by this ResourceInvocationHandler.";
-                throw new IllegalStateException(msg);
-            }
-        }
+        
         InvokedTO to = InvokedTO.newInstance(proxy, method, args);
         if (to.isGetter()) {
             return (handleGet(to));
@@ -101,7 +122,8 @@ final class ResourceInvocationHandler implements InvocationHandler {
             return ieq.equals(proxy, args[0]);
         } else if (InvokedTO.UNKNOWN == to) {
             if (serviceInvocationHandler != null) {
-                return serviceInvocationHandler.invoke(proxy, method, args);
+                Object pxyObj = (injectablePxy != null ? injectablePxy : proxy);
+                return serviceInvocationHandler.invoke(pxyObj, method, args);
             }
         }
         throw new NoSuchMethodException("Method " + method.getName() + " DNE");
