@@ -56,21 +56,36 @@ public final class ServiceInvocationHandler implements InvocationHandler {
         this.implementations = new java.util.HashMap<Class, Object>();
     }
     
-    public static ServiceInvocationHandler newInstance(Class type) {
+    /**
+     * If <code>type</code> has any OSGiService annotations, verify that it 
+     * actually implements these interfaces.  If both validate OK, then return
+     * a new ServiceInvocationHandler.
+     * 
+     * If it doesn't define any OSGiService annotations, return null;
+     * 
+     * @param type
+     * @return
+     * @throws IllegalStateException - thrown when: 
+     *   an OSGiService annotation is defined with a NULL service() definition
+     *   an OSGiService annotation is defined with all three of: pid(), filter()
+     *      and implementation() are NULL or zero length.
+     *   an OSGiService annotation is defined with a service() definition of
+     *      Void.class
+     *   an OSGiService annotation is defined and <code>type</code> does not 
+     *      implement this interface.
+     */
+    public static ServiceInvocationHandler newInstance(Class type) 
+            throws IllegalStateException {
         ServiceInvocationHandler svcIH = null;
-        
-        Set<Class> interfaces = Classes.getInterfaces(type);
-        if (interfaces.size() > 0) {
-            Set<OSGiService> osgisvcs = 
-                    getOSGiServiceAnnotations(type, interfaces);
 
-            if (osgisvcs.size() > 0) {
-                Set<Class> svcIntfcs = toServiceInterfaces(osgisvcs);
-                boolean atLeastOneRemoved = interfaces.removeAll(svcIntfcs);
-                if (atLeastOneRemoved) {
-                    svcIH = new ServiceInvocationHandler(type);
-                }
-            }
+        Set<OSGiService> osgisvcs = getOSGiServiceAnnotations(type);
+
+        if (osgisvcs.size() > 0) {
+            validate(type, osgisvcs);
+            
+            verifyHasAllServiceInterfaces(type, osgisvcs);
+            
+            svcIH = new ServiceInvocationHandler(type);
         }
         
         return svcIH;
@@ -187,16 +202,11 @@ public final class ServiceInvocationHandler implements InvocationHandler {
      * This takes care of both: OSGiServices and OSGiService annotations
      *
      * @param type Class - the JDP Interface to be implemented by the Proxy
-     * @param interfaces Set<Class> - the Interfaces defined on class 'type' - 
-     * this is used to validate that the identified OSGiService annotations 
-     * found on 
-     * <code>type</code> actually has a corresponding Interface in the Set 
-     * <code>interfaces<code>
+     * 
      * @return Set<OSGiService> - all defined OSGiService annotations regardless
      * if they are defined directly or within @OSGiServices
      */
-    private static Set<OSGiService> getOSGiServiceAnnotations(Class type, 
-            Set<Class> interfaces) {
+    private static Set<OSGiService> getOSGiServiceAnnotations(Class type) {
         Set<OSGiService> services = new java.util.HashSet<OSGiService>();
 
         Set<OSGiServices> anns1 = Annotations.get(type, OSGiServices.class);
@@ -215,45 +225,51 @@ public final class ServiceInvocationHandler implements InvocationHandler {
             services.addAll(anns2);
         }
         
-        return returnValidatedServices(type, interfaces, services);
+        return services;
     }
     
-    private static Set<OSGiService> returnValidatedServices(Class type, 
-            Set<Class> interfaces, Set<OSGiService> services) {
-        Set<OSGiService> rtn = new java.util.HashSet<OSGiService>();
-        for (OSGiService s : services) {
-            if (s.service() == null) {
-                String msg = "Interface {} was annotated with OSGiService, " +
-                        "but it's Service value was NULL";
-                LOG.warn(msg, type.getName());
-                continue;
+    private static void validate(Class type, Set<OSGiService> osgisvcs) {
+        if (osgisvcs == null || osgisvcs.size() < 1) return;
+        for (OSGiService svc : osgisvcs) {
+            if (svc.service() == null) {
+                String msg = "Interface " + type.getName() + " has an " +
+                    "OSGiService Annotation with an empty service() definition.";
+                throw new IllegalStateException(msg);
             }
-            if (s.service() == Void.class) {
-                String msg = "Interface {} was annotated with OSGiService, " +
-                        "but it's Service value was {}";
-                LOG.warn(msg, type.getName(), Void.class.getName());
-                continue;
+            if (svc.service() == Void.class) {
+                String msg = "Interface " + type.getName() + " has an " +
+                    "OSGiService Annotation with a service() definition of " +
+                    "Void.class.";
+                throw new IllegalStateException(msg);
             }
-            if (interfaces.contains(s.service())) {
-                rtn.add(s);
-            } else {
-                String msg = "Interface {} was annotated with OSGiService, " +
-                        "but it did not extend interface {}";
-                LOG.warn(msg, type.getName(), s.service().getName());
+            if (length(svc.pid()) < 1 && length(svc.filter()) < 1 && 
+                    svc.implementation() == null) {
+                String msg = "Interface " + type.getName() + " has OSGiService"+
+                    " Annotation " + svc.service() + " but all three of " +
+                    " 'pid', 'filter' and 'implementation' are NULL or empty.";
+                throw new IllegalStateException(msg);
             }
         }
-
-        return rtn;
     }
-    
-    private static Set<Class> toServiceInterfaces(Set<OSGiService> set) {
-        Set<Class> rtn = new java.util.HashSet<Class>();
-        if (set != null && set.size() > 0) {
-            for (OSGiService svc : set) {
-                rtn.add(svc.service());
+    private static void verifyHasAllServiceInterfaces(Class type, 
+            Set<OSGiService> osgisvcs) {
+        if (type == null || osgisvcs == null) return;
+        
+        Set<Class> missing = new java.util.HashSet<Class>();
+        for (OSGiService svc : osgisvcs) {
+            if (! Classes.implementsInterface(type, svc.service())) {
+                missing.add(svc.service());
             }
         }
-        return rtn;
+        if (missing.size() > 0) {
+            StringBuilder sb = new StringBuilder(128);
+            sb.append("Interface ").append(type.getName()).append("is missing");
+            sb.append("and 'implements' for the following interfaces:\n");
+            for (Class clazz : missing) {
+                sb.append(clazz.getName()).append("\n");
+            }
+            throw new IllegalStateException(sb.toString());
+        }
     }
     
     /***************************************************************************
@@ -261,7 +277,8 @@ public final class ServiceInvocationHandler implements InvocationHandler {
      * Inner Classes
      * 
      */
-    private static final class FindFirstServiceOfType implements IAnnotationVisitor<OSGiService> {
+    private static final class FindFirstServiceOfType implements
+            IAnnotationVisitor<OSGiService> {
         private final Class serviceInterface;
         private OSGiService annotation;
         

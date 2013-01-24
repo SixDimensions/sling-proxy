@@ -57,6 +57,31 @@ public final class Classes {
         }
         return set;
     }
+    
+    /**
+     * Verifies that the Class or Interface <code>target</code> has the 
+     * interface <code>interfce</code> defined somewhere in its hierarchy.
+     * 
+     * This performs a Breadth First Search on the class inheritance hierarchy
+     * 
+     * @param target Class - the Class or Interface to be searched
+     * @param interfce Class - the interface to look for
+     * @return boolean
+     */
+    public static boolean implementsInterface(Class target, Class interfce) {
+        Class[] ca = target.getInterfaces();
+        for (Class clazz : ca) {
+            if (clazz == interfce) {
+                return true;
+            }
+        }
+        for (Class clazz : ca) {
+            if (implementsInterface(clazz, interfce)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Find the first Class that contains the given Method
