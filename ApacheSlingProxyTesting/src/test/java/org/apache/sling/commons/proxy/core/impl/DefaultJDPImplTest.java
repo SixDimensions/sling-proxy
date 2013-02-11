@@ -24,8 +24,7 @@ import javax.jcr.RepositoryException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.core.SlingEnvironmentHelper;
 import org.apache.sling.commons.proxy.api.IJDPFactory;
-import org.apache.sling.commons.proxy.api.annotations.InjectField;
-import org.apache.sling.commons.proxy.api.annotations.OSGiService;
+import org.apache.sling.commons.proxy.api.SlingProxy;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -86,6 +85,9 @@ public class DefaultJDPImplTest {
         log.debug("");
         String path = "/content/geometrixx/en/jcr:content";
         JcrContentNode2 node = newInstance(path, JcrContentNode2.class);
+        
+        Resource r = node.getBackingResource();
+        assertTrue("The BackingResource returned NULL and should not have.", r != null);
 
         Date d = node.getLastReplicated();
         assertTrue("Last Replicated returned NULL", d != null);
@@ -207,21 +209,13 @@ public class DefaultJDPImplTest {
         assertTrue("Proxy was instantiated without SlingProperty annotation.", node1 == null);
     }
     
-    @Test
-    public void testServiceResolutionAndMethodInvocation() throws RepositoryException, URISyntaxException {
-        String path1 = "/content/geometrixx/en/jcr:content";
-        JcrContentNode2 node1 = newInstance(path1, JcrContentNode2.class);
-        
-        assertTrue("Return type for whatIsTheResourcePath did not match", node1.getImagePath().equals(node1.whatIsTheResourcePath()));
-        assertTrue("Return type for calculateDepth did not match", -13 == node1.calculateDepth() );
-    }
     /**
      * *************************************************************************
      *
      * Convenience Methods
      *
      */
-    private static <T> T newInstance(String resource, Class<T> t) throws RepositoryException, URISyntaxException {
+    private static <T extends SlingProxy> T newInstance(String resource, Class<T> t) throws RepositoryException, URISyntaxException {
         Resource r1 = SlingEnvironmentHelper.getResource(null, null, resource);
         assertTrue("Resource " + resource + " was NULL", r1 != null);
 
@@ -238,7 +232,7 @@ public class DefaultJDPImplTest {
      * Sample Sling Proxy Interfaces
      *
      */
-    private static interface JcrContentNode {
+    private static interface JcrContentNode extends SlingProxy {
 
         @SlingProperty
         Date getCq_lastReplicated();
@@ -247,8 +241,7 @@ public class DefaultJDPImplTest {
         String getJcr_title();
     }
 
-    @OSGiService(service = MyFunkyService.class, implementation = MyFunkyServiceImpl.class)
-    private static interface JcrContentNode2 extends MyFunkyService {
+    private static interface JcrContentNode2 extends SlingProxy, MyFunkyService {
 
         @SlingProperty(name = "cq:lastReplicated")
         Date getLastReplicated();
@@ -266,24 +259,10 @@ public class DefaultJDPImplTest {
         InputStream getGeoCubePDF();
     }
 
-    private static interface MyFunkyService {
+    private static interface MyFunkyService extends SlingProxy {
 
         String whatIsTheResourcePath();
 
         int calculateDepth();
-    }
-
-    public static final class MyFunkyServiceImpl implements MyFunkyService {
-        
-        @InjectField
-        private JcrContentNode2 instance;
-
-        public String whatIsTheResourcePath() {
-            return instance.getImagePath();
-        }
-
-        public int calculateDepth() {
-            return -13;
-        }
     }
 }
