@@ -24,7 +24,8 @@ public interface IJDPFactory {
      *
      * @param r Resource - the Sling resource that backs the new JDP instance
      * @param type Class<T> - The primary interface/type for the new JDP
-     * @return T - the new Java Dynamic Proxy instance
+     * @return T extends SlingProxy - the new Java Dynamic Proxy instance type
+     *  which must extend SlingProxy
      */
-    <T> T newInstance(Resource r, Class<T> type);
+    <T extends SlingProxy> T newInstance(Resource r, Class<T> type);
 }
