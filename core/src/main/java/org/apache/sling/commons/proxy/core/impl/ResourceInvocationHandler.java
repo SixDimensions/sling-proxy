@@ -17,7 +17,6 @@ package org.apache.sling.commons.proxy.core.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Map;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.core.lang.DefaultHashCodeImpl;
@@ -32,6 +31,7 @@ import org.apache.sling.api.resource.ValueMap;
  *
  * proxy-poc
  *
+ * @TODO:  implement 'set' method functionality
  *
  * org.apache.sling.commons.proxy.poc.jdp.ResourceInvocationHandler
  */
@@ -41,22 +41,12 @@ final class ResourceInvocationHandler implements InvocationHandler {
      * The backing Sling Resource
      */
     private final Resource r;
-    /**
-     * Handles Service Method Invocation - non GET/SET/IS Methods
-     */
-    private final InvocationHandler serviceInvocationHandler;
+    
     /**
      * This caches all 'get' or 'is' method's return values.  Calling 'set' will
      * clear that properties cached value.
      */
     private final Map<String, Object> cache;
-    
-    /**
-     * This is almost the same Object as <code>proxy</code> passed into 
-     * 'invoke(..)', except this one will not have a ServiceInvocationHandler
-     * instance.  This will prevent recursive Service Method calls to itself.
-     */
-    private final Object injectablePxy;
     
     
     /**
@@ -66,28 +56,9 @@ final class ResourceInvocationHandler implements InvocationHandler {
      * @param r Resource - the
      */
     @SuppressWarnings("rawtypes")
-    private ResourceInvocationHandler(Resource r, 
-            InvocationHandler serviceInvocationHandler,
-            Object injectableProxy) {
+    ResourceInvocationHandler(Resource r) {
         this.r = r;
-        this.serviceInvocationHandler = serviceInvocationHandler;
         this.cache = new java.util.HashMap<String, Object>();
-        this.injectablePxy = injectableProxy;
-    }
-    
-    public static <T> T newInstance(Class<T> type, Resource r, 
-            InvocationHandler serviceIH) {
-        T injectable = null;
-        if (serviceIH != null) {
-            InvocationHandler injectableIH = new ResourceInvocationHandler(r, null, null);
-            injectable = (T) Proxy.newProxyInstance(type.getClassLoader(), 
-                new Class[] { type } , injectableIH);
-        }
-        
-        InvocationHandler ih = new ResourceInvocationHandler(r, serviceIH, injectable);
-        T rtn = (T) Proxy.newProxyInstance(type.getClassLoader(), 
-                new Class[] { type } , ih);
-        return rtn;
     }
 
     /**
@@ -120,11 +91,8 @@ final class ResourceInvocationHandler implements InvocationHandler {
             }
             IEquals ieq = new JDPEqualsImpl();
             return ieq.equals(proxy, args[0]);
-        } else if (InvokedTO.UNKNOWN == to) {
-            if (serviceInvocationHandler != null) {
-                Object pxyObj = (injectablePxy != null ? injectablePxy : proxy);
-                return serviceInvocationHandler.invoke(pxyObj, method, args);
-            }
+        } else if (to.isType(MethodType.BackingResource)) {
+            return r;
         }
         throw new NoSuchMethodException("Method " + method.getName() + " DNE");
     }
@@ -150,7 +118,7 @@ final class ResourceInvocationHandler implements InvocationHandler {
      *
      */
     /**
-     * @TODO:  refactor to also cache the ValueMap for a given path?
+     * @TODO:  refactor to also cache the ValueMap for a given path maybe?
      * 
      * @param to
      * @return

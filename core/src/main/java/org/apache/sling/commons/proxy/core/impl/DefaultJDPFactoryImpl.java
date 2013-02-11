@@ -16,8 +16,12 @@
 package org.apache.sling.commons.proxy.core.impl;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.api.IJDPFactory;
+import org.apache.sling.commons.proxy.api.SlingProxy;
 import org.apache.sling.commons.proxy.api.annotations.SlingProperty;
 import org.apache.sling.commons.proxy.core.reflection.Annotations;
 /**
@@ -28,21 +32,45 @@ import org.apache.sling.commons.proxy.core.reflection.Annotations;
  *
  * org.apache.sling.commons.proxy.poc.jdp.DefaultJDPImpl
  */
+@Service(value=IJDPFactory.class)
+@Component(description="Creates new SlingProxy instances",
+        immediate=true)
 public final class DefaultJDPFactoryImpl implements IJDPFactory {
-
-    public <T> T newInstance(Resource r, Class<T> type) {
+    
+    /**
+     * Creates new SlingProxy instances of the provided type <code>type</code>
+     * using the <code>r</code> as the backing Sling Resource for the JavaBean
+     * accessor methods on <code>type</code>
+     * 
+     * The following criteria must be met when invoking this method:
+     * <ol>
+     *    <li><code>r</code> must not be null</li>
+     *    <li><code>type</code> must not be null</li>
+     *    <li><code>type</code> must be an Interface</li>
+     *    <li>Interface <code>type</code> must have at least one 
+     *        <code>@SlingProperty</code> Annotation
+     *    </li>
+     *    <li></li>
+     * <ol>
+     * 
+     * @param <T>  extends SlingProxy
+     * @param r Resource - the backing Resource
+     * @param type Class - the interface that extends SlingProxy that is the
+     * Interface we are to create a new Proxy instance of
+     * @return the new proxy instance of type <code>type</code>
+     */
+    public <T extends SlingProxy> T newInstance(Resource r, Class<T> type) {
         validateIsInstantiable(r, type);
         
-        InvocationHandler svcIH = ServiceInvocationHandler.newInstance(type);
-        
-        T rtn = ResourceInvocationHandler.newInstance(type, r, svcIH);
-
+        InvocationHandler ih = new ResourceInvocationHandler(r);
+        T rtn = (T) Proxy.newProxyInstance(type.getClassLoader(), 
+                new Class[] { type } , ih);
         return rtn;
     }
     
     private static <T> void validateIsInstantiable(Resource r, Class<T> type) {
         if (r == null) {
-            String msg = "The Resource cannot be NULL.";
+            String msg = "The backing Resource cannot be NULL.";
             throw new NullPointerException(msg);
         }
         if (type == null) {

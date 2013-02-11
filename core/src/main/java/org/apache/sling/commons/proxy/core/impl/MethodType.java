@@ -33,6 +33,7 @@ enum MethodType {
     ToString("^(toString)$"), 
     HashCode("^(hashCode)$"), 
     Equals("^(equals)$"), 
+    BackingResource("^(getBackingResource)$"),
     JavaBeanGet("^get([A-Z])(\\w+)$"), 
     JavaBeanIs("^is([A-Z])(\\w+)$"), 
     JavaBeanSet("^is([A-Z])(\\w+)$"), 
