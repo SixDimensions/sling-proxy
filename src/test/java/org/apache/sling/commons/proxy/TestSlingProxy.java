@@ -1,12 +1,9 @@
 package org.apache.sling.commons.proxy;
 
 import static org.junit.Assert.assertEquals;
-
-import java.lang.reflect.Field;
+import static org.junit.Assert.fail;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
-import org.apache.sling.commons.proxy.annotations.SlingProperty;
 import org.apache.sling.commons.proxy.impl.DefaultSlingProxyServiceImpl;
 import org.apache.sling.commons.testing.sling.MockResource;
 import org.apache.sling.commons.testing.sling.MockResourceResolver;
@@ -40,8 +37,7 @@ public class TestSlingProxy {
 				"/content/test", PAGE_RESOURCE_TYPE) {
 			public <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
 				if (ISlingProxy.class.isAssignableFrom(type)) {
-					return (AdapterType) proxyAdaptorFactory.getAdapter(this,
-							type);
+					return slingProxyService.getProxy(this, type);
 				} else {
 					return super.adaptTo(type);
 				}
@@ -53,8 +49,7 @@ public class TestSlingProxy {
 				"/content/test/jcr:content", CONTENT_RESOURCE_TYPE) {
 			public <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
 				if (ISlingProxy.class.isAssignableFrom(type)) {
-					return (AdapterType) proxyAdaptorFactory.getAdapter(this,
-							type);
+					return slingProxyService.getProxy(this, type);
 				} else {
 					return super.adaptTo(type);
 				}
@@ -75,25 +70,23 @@ public class TestSlingProxy {
 		log.info("runTests");
 
 		Resource resource = resolver.getResource("/content/test/jcr:content");
-		SimpleSlingProxy simpleSlingProxy = resource
-				.adaptTo(SimpleSlingProxy.class);
-                
-		log.info("Testing backing resource");
-		assertEquals(simpleSlingProxy.getBackingResource(), resource);
+		try {
+			SimpleSlingProxy simpleSlingProxy = resource
+					.adaptTo(SimpleSlingProxy.class);
+			fail("Expected UnsupportedOperationException getting: "
+					+ simpleSlingProxy);
+		} catch (UnsupportedOperationException uoe) {
+			log.debug("Passed initial test");
+		}
 
-		log.info("Testing property retrieval");
-		assertEquals(TITLE, simpleSlingProxy.getJcrTitle());
-		assertEquals(CONTENT_RESOURCE_TYPE,
-				simpleSlingProxy.getSlingResourceType());
-		assertEquals(false, simpleSlingProxy.isActive());
-		assertEquals("false", simpleSlingProxy.active());
-		assertEquals(TITLE, simpleSlingProxy.jcrTitle());
-		assertEquals(null, simpleSlingProxy.getNonExistentProperty());
-
-		log.info("Testing Sling Property");
 		Resource pageResource = resolver.getResource("/content/test");
 		SlingPropertyProxy pageProxy = pageResource
 				.adaptTo(SlingPropertyProxy.class);
+
+		log.info("Testing backing resource");
+		assertEquals(pageProxy.getBackingResource(), pageResource);
+
+		log.info("Testing property retrieval");
 		assertEquals(TITLE, pageProxy.getTitle());
 		assertEquals(PAGE_RESOURCE_TYPE, pageProxy.getSlingResourceType());
 		assertEquals(null, pageProxy.getNonExistentProperty());
