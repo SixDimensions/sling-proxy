@@ -56,4 +56,34 @@ public final class Annotations {
 
 		return false;
 	}
+
+	/**
+	 * For the given Method 'method' determine if it has an Annotation of type
+	 * or subclass of type 'annType'.
+	 * 
+	 * @param <T>
+	 *            - <T extends Annotation> - Defines generic type T to be a
+	 *            subtype of Annotation
+	 * @param method
+	 *            Method - the Method to get annotations from
+	 * @param annType
+	 *            Class<T> - the annotation types to get from Class 'clazz'
+	 * @return TRUE if it does, FALSE otherwise
+	 */
+	public static <T extends Annotation> boolean methodHasAnnotation(
+			Method method, Class<T> annType) {
+
+		Annotation[] ana = method.getAnnotations();
+		if (ana == null) {
+			return false;
+		}
+
+		for (Annotation a : ana) {
+			if (annType.isAssignableFrom(a.getClass())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

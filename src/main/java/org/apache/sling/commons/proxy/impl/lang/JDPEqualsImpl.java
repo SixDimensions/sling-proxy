@@ -17,7 +17,7 @@ package org.apache.sling.commons.proxy.impl.lang;
 
 import java.lang.reflect.Proxy;
 
-import org.apache.sling.commons.proxy.impl.ResourceInvocationHandler;
+import org.apache.sling.commons.proxy.impl.SlingInvocationHandler;
 import org.apache.sling.commons.proxy.impl.reflection.Classes;
 
 /**
@@ -46,9 +46,9 @@ public class JDPEqualsImpl {
 		}
 
 		try {
-			ResourceInvocationHandler rih1 = (ResourceInvocationHandler) Proxy
+			SlingInvocationHandler rih1 = (SlingInvocationHandler) Proxy
 					.getInvocationHandler(o1);
-			ResourceInvocationHandler rih2 = (ResourceInvocationHandler) Proxy
+			SlingInvocationHandler rih2 = (SlingInvocationHandler) Proxy
 					.getInvocationHandler(o2);
 			if (Classes.haveSameInterfaces(o1, o2)) {
 				return stringEquals(rih1.getResourcePath(),
