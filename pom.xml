@@ -20,7 +20,7 @@
 	</parent>
 
 	<artifactId>org.apache.sling.commons.proxy</artifactId>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>Apache Sling Proxy</name>
