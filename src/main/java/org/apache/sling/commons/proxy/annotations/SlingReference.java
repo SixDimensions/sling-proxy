@@ -18,6 +18,12 @@
  */
 package org.apache.sling.commons.proxy.annotations;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Annotation used to mark a Method as referencing another resource. The path is
  * required paths starting with '/' are absolute references, and do not have to
@@ -49,6 +55,9 @@ package org.apache.sling.commons.proxy.annotations;
  * IPageProxy getPageProxy();
  *
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+@Documented
 public @interface SlingReference {
 
 	/**
