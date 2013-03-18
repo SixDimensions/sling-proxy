@@ -164,8 +164,14 @@ public class SlingInvocationHandler implements InvocationHandler {
 	private Object handleGetReference(BaseInvokedTO to) {
 		log.trace("handleGetReference");
 
-		log.debug("Referencing resource at path {}", to.path);
-		Resource reference = r.getResourceResolver().getResource(to.path);
+		log.debug("Referencing resource at path: {}", to.path);
+		Resource reference = null;
+		if(to.path.startsWith("/")){
+			reference = r.getResourceResolver().getResource(to.path);
+		}else{
+			reference = r.getResourceResolver().getResource(r, to.path);
+		}
+		log.debug("Loaded resource: {}", reference);
 
 		if (reference != null) {
 			if (Resource.class.equals(to.method.getReturnType())) {

@@ -18,7 +18,6 @@
  */
 package org.apache.sling.commons.proxy.impl;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -31,7 +30,6 @@ public class ProxyBundleActivator implements BundleActivator {
 	private static final Logger log = LoggerFactory
 			.getLogger(ProxyBundleActivator.class);
 	private static BundleContext BUNDLE_CONTEXT;
-	private static ReentrantReadWriteLock LOCK;
 
 	/**
 	 * Get the bundle context. Will lock until the bundle context is returned.
@@ -39,12 +37,7 @@ public class ProxyBundleActivator implements BundleActivator {
 	 * @return the bundle context
 	 */
 	public static BundleContext getBundleContext() {
-		LOCK.readLock().lock();
-		try {
-			return BUNDLE_CONTEXT;
-		} finally {
-			LOCK.readLock().unlock();
-		}
+		return BUNDLE_CONTEXT;
 	}
 
 	/*
@@ -55,13 +48,9 @@ public class ProxyBundleActivator implements BundleActivator {
 	 * )
 	 */
 	public void start(BundleContext bc) throws Exception {
-		LOCK.writeLock().lock();
-		try {
-			BUNDLE_CONTEXT = bc;
-		} finally {
-			LOCK.readLock().unlock();
-		}
-		log.debug("Starting Bundle and set BundleContext");
+		log.info("start");
+		BUNDLE_CONTEXT = bc;
+		log.debug("Bundle started successfully");
 	}
 
 	/*
@@ -71,13 +60,9 @@ public class ProxyBundleActivator implements BundleActivator {
 	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bc) throws Exception {
-		LOCK.writeLock().lock();
-		try {
-			BUNDLE_CONTEXT = null;
-		} finally {
-			LOCK.readLock().unlock();
-		}
-		log.debug("Stopping Bundle and clearing BundleContext");
+		log.info("stop");
+		BUNDLE_CONTEXT = null;
+		log.debug("Bundle stopped and context cleared");
 	}
 
 }
