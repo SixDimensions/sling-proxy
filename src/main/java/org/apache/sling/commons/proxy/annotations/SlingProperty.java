@@ -50,14 +50,16 @@ import java.lang.annotation.*;
  * 
  * Here are 3 examples, one of each style:
  * 
- *   @SlingProperty(name = "cq:lastReplicated")
+ * <code><br/>
+ *   @SlingProperty(name = "cq:lastReplicated")<br/>
  *   Date getLastReplicated();
- * 
- *   @SlingProperty(path = "par/image", name = "fileReference")
+ * <br/><br/>
+ *   @SlingProperty(path = "par/image", name = "fileReference")<br/>
  *   String getImagePath(); 
- * 
- *   @SlingProperty(path="/content/dam/geometrixx/documents/GeoCube_Datasheet.pdf/jcr:content/renditions/original/jcr:content", name="jcr:data")
- *   InputStream getGeoCubePDF();
+ * <br/><br/>
+ *   @SlingProperty(path="/content/dam/geometrixx/documents/GeoCube_Datasheet.pdf/jcr:content/renditions/original/jcr:content", name="jcr:data")<br/>
+ *   InputStream getGeoCubePDF();<br/>
+ * </code>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })

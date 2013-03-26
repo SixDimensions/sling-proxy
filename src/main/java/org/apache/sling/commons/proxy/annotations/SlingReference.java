@@ -41,18 +41,20 @@ import java.lang.annotation.Target;
  * <li>If using the ProxyService to retrieve a proxy instance does not throw and
  * error and does not return null, the resulting object will returned</li>
  * <li>Otherwise, null will be returned</li>
- * <ol> 
+ * </ol> 
  * 
  * Here are 3 examples, showing valid return types:
  * 
- * &#64;SlingReference(path = "/content/page")
- * Resource getPage();
+ * <code><br/>
+ * &#64;SlingReference(path = "/content/page")<br/>
+ * Resource getPage();<br/><br/>
  * 
- * &#64;SlingReference(path = "/content/page")
- * ValueMap getPageProperties();
+ * &#64;SlingReference(path = "/content/page")<br/>
+ * ValueMap getPageProperties();<br/><br/>
  * 
  * &#64;SlingReference(path = "/content/page")
  * IPageProxy getPageProxy();
+ * </code>
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

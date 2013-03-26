@@ -46,19 +46,20 @@ import org.apache.sling.api.resource.Resource;
  * <li>If using the ProxyService to retrieve a proxy instance does not throw and
  * error and does not return null, the resulting object will returned</li>
  * <li>Otherwise, null will be returned</li>
- * <ol>
+ * </ol>
  * 
  * Here are 3 examples, showing valid usages:
  * 
- * &#64;SlingChildren(path = "jcr:content")
- * Iterator&lt;Resource&gt; getChildren();
+ * <code><br/>
+ * &#64;SlingChildren(path = "jcr:content")<br/>
+ * Iterator&lt;Resource&gt; getChildren();<br/><br/>
  * 
- * &#64;SlingReference(returnType = ValueMap.class)
- * Iterator&lt;ValueMap&gt; getSubnodeProperties();
+ * &#64;SlingReference(returnType = ValueMap.class)<br/>
+ * Iterator&lt;ValueMap&gt; getSubnodeProperties();<br/><br/>
  * 
- * &#64;SlingReference(path = "/content/page", returnType=IPageProxy.class)
- * Iterator&lt;IPageProxy&gt; getSubPageProxes();
- * 
+ * &#64;SlingReference(path = "/content/page", returnType=IPageProxy.class)<br/>
+ * Iterator&lt;IPageProxy&gt; getSubPageProxes();<br/><br/>
+ * </code>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
