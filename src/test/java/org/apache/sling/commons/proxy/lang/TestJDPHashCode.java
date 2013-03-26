@@ -6,15 +6,17 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.BaseSlingProxyTest;
+import org.apache.sling.commons.proxy.ISlingProxyService;
+import org.apache.sling.commons.proxy.impl.DefaultSlingProxyServiceImpl;
 import org.apache.sling.commons.proxy.samples.DuplicateSlingPropertyProxy;
 import org.apache.sling.commons.proxy.samples.SlingPropertyProxy;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestJDPHasCode extends BaseSlingProxyTest {
+public class TestJDPHashCode extends BaseSlingProxyTest {
 	private static final Logger log = LoggerFactory
-			.getLogger(TestJDPHasCode.class);
+			.getLogger(TestJDPHashCode.class);
 
 	@Test
 	public void runTests() {
@@ -41,6 +43,13 @@ public class TestJDPHasCode extends BaseSlingProxyTest {
 				.adaptTo(DuplicateSlingPropertyProxy.class);
 		log.info("HashCode1 {}, HashCode 2 {}", hashCode, pageProxy3.hashCode());
 		assertFalse(pageProxy3.hashCode() == hashCode);
+
+		log.info("Ensuring retrieving the same proxy from different proxy services results in the same hashCode");
+		ISlingProxyService slingProxyService2 = new DefaultSlingProxyServiceImpl();
+		SlingPropertyProxy pageProxy4 = slingProxyService2.getProxy(
+				pageResource, SlingPropertyProxy.class);
+		log.info("HashCode1 {}, HashCode 2 {}", hashCode, pageProxy4.hashCode());
+		assertEquals(hashCode, pageProxy4.hashCode());
 
 		log.info("Tests Successful");
 	}

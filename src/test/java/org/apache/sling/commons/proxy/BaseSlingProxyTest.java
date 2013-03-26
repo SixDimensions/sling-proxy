@@ -14,7 +14,7 @@ public class BaseSlingProxyTest {
 	private final static Logger log = LoggerFactory
 			.getLogger(TestSlingProxy.class);
 	protected final MockResourceResolver resolver = new MockResourceResolver();
-	protected final DefaultSlingProxyServiceImpl slingProxyService = new DefaultSlingProxyServiceImpl();
+	protected final ISlingProxyService slingProxyService = new DefaultSlingProxyServiceImpl();
 
 	@Before
 	public void init() throws Exception {
