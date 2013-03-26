@@ -60,7 +60,7 @@ public final class PrimeNumbers {
 	 * Return 'n'th prime number. A 0 value for 'n' will return the first prime
 	 * number.
 	 * 
-	 * @param num
+	 * @param n
 	 *            int - the requested prime number. A value less than one will
 	 *            return the first prime number.
 	 * 

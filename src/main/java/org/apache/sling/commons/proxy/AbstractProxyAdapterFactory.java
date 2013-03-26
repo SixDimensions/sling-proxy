@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
  * 
  * Implementors of the SlingProxy interface should register an AdapterFactory
  * Service with the services
+ * 
+ * @see org.apache.sling.api.adapter.AdapterFactory
  */
 public class AbstractProxyAdapterFactory implements AdapterFactory {
 
@@ -49,10 +51,7 @@ public class AbstractProxyAdapterFactory implements AdapterFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.sling.api.adapter.AdapterFactory#getAdapter(java.lang.Object,
-	 * java.lang.Class)
+	 * @see org.apache.sling.api.adapter.AdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
 	 */
 	public <AdapterType> AdapterType getAdapter(Object adaptable,
 			Class<AdapterType> type) {

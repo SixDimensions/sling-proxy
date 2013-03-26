@@ -62,7 +62,7 @@ public final class Classes {
 	 * 
 	 * @param o1
 	 * @param o2
-	 * @return
+	 * @return TRUE if the objects have the same interfaces, FALSE otherwise
 	 */
 	public static boolean haveSameInterfaces(Object o1, Object o2) {
 		if (o1 == o2) {

@@ -49,10 +49,10 @@ public interface InvokedTO {
 	 * Determines if the current Invocation is named in the JavaBeans style, '
 	 * that is 'get', 'is' or 'set'.
 	 * 
-	 * @return
+	 * @return TRUE if the method is JavaBean compliant, FALSE otherwise
 	 */
 	public boolean isJavaBean();
-	
+
 	/**
 	 * Determines if the item represented by this method Invocation is a
 	 * relative path reference, that is a descendant of the backing Resource

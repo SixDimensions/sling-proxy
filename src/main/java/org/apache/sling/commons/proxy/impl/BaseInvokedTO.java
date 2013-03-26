@@ -23,27 +23,50 @@ import java.lang.reflect.Method;
 import org.apache.sling.commons.proxy.impl.lang.MethodType;
 
 /**
- * BaseInvokedTO - Transfer Object Meant as a convenient way to maintain and pass a
- * method invocation around The members are not private because the class is
- * package protected and they are final.
+ * BaseInvokedTO - Transfer Object Meant as a convenient way to maintain and
+ * pass a method invocation around The members are not private because the class
+ * is package protected and they are final.
  */
 public class BaseInvokedTO implements InvokedTO {
 
+	/**
+	 * The proxy instance
+	 */
 	final Object proxy;
+	
+	/**
+	 * The method being invoked
+	 */
 	final Method method;
+	
+	/**
+	 * The method arguments
+	 */
 	final Object[] args;
+	
+	/**
+	 * The path from the annotations
+	 */
 	final String path;
+	
+	/**
+	 * The type of method being invoked
+	 */
 	final MethodType mt;
 
 	/**
 	 * Constructs a new Base Invoked Transfer Object.
 	 * 
 	 * @param proxy
+	 *            the proxy instance
 	 * @param method
+	 *            the method being invoked
 	 * @param args
+	 *            the method arguments
 	 * @param path
-	 * @param name
+	 *            the path from the annotations
 	 * @param mt
+	 *            the type of method being invoked
 	 */
 	protected BaseInvokedTO(Object proxy, Method method, Object[] args,
 			String path, MethodType mt) {
@@ -56,6 +79,7 @@ public class BaseInvokedTO implements InvokedTO {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.sling.commons.proxy.impl.InvokedTO#isAbsolute()
 	 */
 	public boolean isAbsolute() {
@@ -64,6 +88,7 @@ public class BaseInvokedTO implements InvokedTO {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.sling.commons.proxy.impl.InvokedTO#isRelative()
 	 */
 	public boolean isRelative() {
@@ -93,6 +118,7 @@ public class BaseInvokedTO implements InvokedTO {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.sling.commons.proxy.impl.InvokedTO#isJavaBean()
 	 */
 	public boolean isJavaBean() {

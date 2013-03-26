@@ -29,7 +29,7 @@ import java.lang.annotation.*;
  * the method name will be used to determine the corresponding JCR property
  * name.  In this case, namespaced property names are handled this way:
  * 
- * @SlingProperty
+ * &#64;SlingProperty<br/>
  * Date getCq_lastReplicated();
  * 
  * this will correspond to a JCR property name of:  'cq:lastReplicated'
@@ -51,13 +51,13 @@ import java.lang.annotation.*;
  * Here are 3 examples, one of each style:
  * 
  * <code><br/>
- *   @SlingProperty(name = "cq:lastReplicated")<br/>
+ *   &#64;SlingProperty(name = "cq:lastReplicated")<br/>
  *   Date getLastReplicated();
  * <br/><br/>
- *   @SlingProperty(path = "par/image", name = "fileReference")<br/>
+ *   &#64;SlingProperty(path = "par/image", name = "fileReference")<br/>
  *   String getImagePath(); 
  * <br/><br/>
- *   @SlingProperty(path="/content/dam/geometrixx/documents/GeoCube_Datasheet.pdf/jcr:content/renditions/original/jcr:content", name="jcr:data")<br/>
+ *   &#64;SlingProperty(path="/content/dam/geometrixx/documents/GeoCube_Datasheet.pdf/jcr:content/renditions/original/jcr:content", name="jcr:data")<br/>
  *   InputStream getGeoCubePDF();<br/>
  * </code>
  */

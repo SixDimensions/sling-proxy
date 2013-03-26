@@ -31,7 +31,7 @@ import org.apache.sling.commons.proxy.annotations.SlingReference;
 import org.apache.sling.commons.proxy.impl.reflection.Annotations;
 
 /**
- * Default implementation of the {@link ISlingProxyService#}
+ * Default implementation of the {@link org.apache.sling.commons.proxy.ISlingProxyService}
  */
 @Service(value = ISlingProxyService.class)
 @Component(description = "Creates ISlingProxy instances", immediate = true)

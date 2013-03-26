@@ -24,7 +24,7 @@ import org.apache.sling.api.resource.Resource;
  * Interface for filtering resources to be returned by the @SlingChildren
  * annotation.
  * 
- * @see org.apache.sling.commons.proxy.SlingChildren
+ * @see org.apache.sling.commons.proxy.annotations.SlingChildren
  */
 public interface ChildFilter {
 
