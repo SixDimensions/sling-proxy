@@ -1,8 +1,9 @@
-package org.apache.sling.commons.proxy;
+package org.apache.sling.commons.proxy.samples;
 
+import org.apache.sling.commons.proxy.ISlingProxy;
 import org.apache.sling.commons.proxy.annotations.SlingProperty;
 
-public interface SlingPropertyProxy extends ISlingProxy {
+public interface DuplicateSlingPropertyProxy extends ISlingProxy {
 
 	@SlingProperty(name = "jcr:title", path = "jcr:content")
 	public String getTitle();

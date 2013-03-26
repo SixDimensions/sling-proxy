@@ -54,7 +54,10 @@ public class InvokedTOFactory {
 		log.trace("newInstance");
 
 		MethodType mt = MethodType.getMethodType(method);
-		if (mt.equals(MethodType.BackingResource)) {
+		if (mt.equals(MethodType.BackingResource)
+				|| mt.equals(MethodType.Equals)
+				|| mt.equals(MethodType.HashCode)
+				|| mt.equals(MethodType.ToString)) {
 			return new BaseInvokedTO(proxy, method, args, "", mt);
 		} else if (Annotations
 				.methodHasAnnotation(method, SlingReference.class)) {

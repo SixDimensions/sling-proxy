@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy;
+package org.apache.sling.commons.proxy.samples;
 
 import org.apache.sling.commons.proxy.ISlingProxy;
 
