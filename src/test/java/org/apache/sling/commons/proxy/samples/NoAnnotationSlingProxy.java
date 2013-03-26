@@ -23,10 +23,8 @@ import org.apache.sling.commons.proxy.ISlingProxy;
 /**
  * A simple proxy interface for testing the SlingProxy API. This proxy interface
  * only utilizes the default property retrieval mechanism.
- * 
- * @author dklco
  */
-public interface SimpleSlingProxy extends ISlingProxy {
+public interface NoAnnotationSlingProxy extends ISlingProxy {
     
 	/**
 	 * Gets the jcr:title attribute
