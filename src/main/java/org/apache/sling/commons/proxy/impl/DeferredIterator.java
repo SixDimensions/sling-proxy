@@ -30,14 +30,32 @@ import org.slf4j.LoggerFactory;
  * Iterator of resources.
  * 
  * @param <E>
+ *            the object type for the interator contents, set in the
+ *            SlingChildren annotation
  */
-public class DeferredIterator<E> implements Iterator<E> {
+final class DeferredIterator<E> implements Iterator<E> {
 
+	/**
+	 * The SLF4j Logger
+	 */
 	private static final Logger log = LoggerFactory
 			.getLogger(DeferredIterator.class);
-	private Iterator<Resource> backingResources;
-	private Class<E> returnType;
-	private ISlingProxyService slingProxyService;
+
+	/**
+	 * The iterator of Resources which backs this deferred iterator
+	 */
+	private final Iterator<Resource> backingResources;
+
+	/**
+	 * They type to be returned.
+	 */
+	private final Class<E> returnType;
+
+	/**
+	 * A reference to the Sling Proxy service, used to load items which are
+	 * SlingProxies
+	 */
+	private final ISlingProxyService slingProxyService;
 
 	/**
 	 * Instantiates a Deferred Iterator.
@@ -49,8 +67,9 @@ public class DeferredIterator<E> implements Iterator<E> {
 	 * @param slingProxyService
 	 *            a reference to the Sling Proxy service
 	 */
-	public DeferredIterator(Iterator<Resource> backingResources,
-			Class<E> returnType, ISlingProxyService slingProxyService) {
+	public DeferredIterator(final Iterator<Resource> backingResources,
+			final Class<E> returnType,
+			final ISlingProxyService slingProxyService) {
 		this.backingResources = backingResources;
 		this.returnType = returnType;
 		this.slingProxyService = slingProxyService;
@@ -72,32 +91,33 @@ public class DeferredIterator<E> implements Iterator<E> {
 	 */
 	public E next() {
 		log.trace("next");
-		Resource resource = backingResources.next();
+		final Resource resource = this.backingResources.next();
 
 		Object toReturn = null;
 		if (resource != null) {
-			if (Resource.class.equals(returnType)) {
+			if (Resource.class.equals(this.returnType)) {
 				log.debug("Returning resource as child");
 				toReturn = resource;
 			}
 
-			Object adapted = resource.adaptTo(returnType);
+			final Object adapted = resource.adaptTo(this.returnType);
 			if (adapted != null) {
 				log.debug("Returning adapted object as child");
 				toReturn = adapted;
 			}
 
 			try {
-				Object proxy = slingProxyService.getProxy(resource, returnType);
+				final Object proxy = this.slingProxyService.getProxy(resource,
+						this.returnType);
 				log.debug("Returning proxy as reference");
 				toReturn = proxy;
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				log.warn("Exception getting proxy, null reference will be returned");
 			}
 		} else {
 			log.debug("Referenced resource is null");
 		}
-		return returnType.cast(toReturn);
+		return this.returnType.cast(toReturn);
 	}
 
 	/*

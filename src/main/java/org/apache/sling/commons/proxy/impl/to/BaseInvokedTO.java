@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy.impl;
+package org.apache.sling.commons.proxy.impl.to;
 
 import java.lang.reflect.Method;
 
@@ -30,51 +30,62 @@ import org.apache.sling.commons.proxy.impl.lang.MethodType;
 public class BaseInvokedTO implements InvokedTO {
 
 	/**
-	 * The proxy instance
-	 */
-	final Object proxy;
-	
-	/**
 	 * The method being invoked
 	 */
-	final Method method;
-	
-	/**
-	 * The method arguments
-	 */
-	final Object[] args;
-	
+	private final Method method;
+
 	/**
 	 * The path from the annotations
 	 */
-	final String path;
-	
+	private final String path;
+
 	/**
 	 * The type of method being invoked
 	 */
-	final MethodType mt;
+	private final MethodType mt;
 
 	/**
 	 * Constructs a new Base Invoked Transfer Object.
 	 * 
-	 * @param proxy
-	 *            the proxy instance
 	 * @param method
 	 *            the method being invoked
-	 * @param args
-	 *            the method arguments
 	 * @param path
 	 *            the path from the annotations
 	 * @param mt
 	 *            the type of method being invoked
 	 */
-	protected BaseInvokedTO(Object proxy, Method method, Object[] args,
-			String path, MethodType mt) {
-		this.proxy = proxy;
+	protected BaseInvokedTO(final Method method, final String path,
+			final MethodType mt) {
 		this.method = method;
-		this.args = args;
 		this.path = path;
 		this.mt = mt;
+	}
+
+	/**
+	 * Gets the invoked method.
+	 * 
+	 * @return the method
+	 */
+	public final Method getMethod() {
+		return this.method;
+	}
+
+	/**
+	 * Gets the method type, derived from the method name.
+	 * 
+	 * @return the method type
+	 */
+	public final MethodType getMt() {
+		return this.mt;
+	}
+
+	/**
+	 * Gets the path specified in the annotation.
+	 * 
+	 * @return the path
+	 */
+	public final String getPath() {
+		return this.path;
 	}
 
 	/*
@@ -83,27 +94,7 @@ public class BaseInvokedTO implements InvokedTO {
 	 * @see org.apache.sling.commons.proxy.impl.InvokedTO#isAbsolute()
 	 */
 	public boolean isAbsolute() {
-		return path != null && path.startsWith("/");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.sling.commons.proxy.impl.InvokedTO#isRelative()
-	 */
-	public boolean isRelative() {
-		return path != null && !isAbsolute() && path.contains("/");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.sling.commons.proxy.impl.InvokedTO#isType(org.apache.sling
-	 * .commons.proxy.impl.lang.MethodType)
-	 */
-	public boolean isType(MethodType _mt) {
-		return mt == _mt;
+		return (this.path != null) && this.path.startsWith("/");
 	}
 
 	/*
@@ -113,7 +104,7 @@ public class BaseInvokedTO implements InvokedTO {
 	 */
 	public boolean isGetter() {
 		return MethodType.contains(new MethodType[] { MethodType.JavaBeanIs,
-				MethodType.JavaBeanGet }, mt);
+				MethodType.JavaBeanGet }, this.mt);
 	}
 
 	/*
@@ -123,6 +114,27 @@ public class BaseInvokedTO implements InvokedTO {
 	 */
 	public boolean isJavaBean() {
 		return MethodType.contains(new MethodType[] { MethodType.JavaBeanIs,
-				MethodType.JavaBeanGet, MethodType.JavaBeanSet }, mt);
+				MethodType.JavaBeanGet, MethodType.JavaBeanSet }, this.mt);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.sling.commons.proxy.impl.InvokedTO#isRelative()
+	 */
+	public boolean isRelative() {
+		return (this.path != null) && !this.isAbsolute()
+				&& this.path.contains("/");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.sling.commons.proxy.impl.InvokedTO#isType(org.apache.sling
+	 * .commons.proxy.impl.lang.MethodType)
+	 */
+	public boolean isType(final MethodType _mt) {
+		return this.mt == _mt;
 	}
 }

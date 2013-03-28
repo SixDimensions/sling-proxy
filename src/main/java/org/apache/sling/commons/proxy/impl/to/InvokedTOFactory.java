@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy.impl;
+package org.apache.sling.commons.proxy.impl.to;
 
 import java.lang.reflect.Method;
 
@@ -34,6 +34,10 @@ import org.slf4j.LoggerFactory;
  * method, this will return the correct transfer object type.
  */
 public class InvokedTOFactory {
+
+	/**
+	 * The SLF4J Logger.
+	 */
 	private static final Logger log = LoggerFactory
 			.getLogger(InvokedTOFactory.class);
 
@@ -49,32 +53,32 @@ public class InvokedTOFactory {
 	 *            the method arguments
 	 * @return the invocation TO
 	 */
-	public static InvokedTO newInstance(Object proxy, Method method,
-			Object[] args) {
+	public static InvokedTO newInstance(final Object proxy,
+			final Method method, final Object[] args) {
 		log.trace("newInstance");
 
-		MethodType mt = MethodType.getMethodType(method);
+		final MethodType mt = MethodType.getMethodType(method);
 		if (mt.equals(MethodType.BackingResource)
 				|| mt.equals(MethodType.Equals)
 				|| mt.equals(MethodType.HashCode)
 				|| mt.equals(MethodType.ToString)) {
-			return new BaseInvokedTO(proxy, method, args, "", mt);
+			return new BaseInvokedTO(method, "", mt);
 		} else if (Annotations
 				.methodHasAnnotation(method, SlingReference.class)) {
-			SlingReference sr = method.getAnnotation(SlingReference.class);
+			final SlingReference sr = method
+					.getAnnotation(SlingReference.class);
 
-			String path = StringUtils.trim(sr.path());
+			final String path = StringUtils.trim(sr.path());
 
-			return new BaseInvokedTO(proxy, method, args, path, mt);
+			return new BaseInvokedTO(method, path, mt);
 		} else if (Annotations.methodHasAnnotation(method, SlingChildren.class)) {
-			SlingChildren sc = method.getAnnotation(SlingChildren.class);
-			String path = StringUtils.trim(sc.path());
-			Class<?> returnType = sc.returnType();
+			final SlingChildren sc = method.getAnnotation(SlingChildren.class);
+			final String path = StringUtils.trim(sc.path());
+			final Class<?> returnType = sc.returnType();
 
-			return new InvokedChildrenTO(proxy, method, args, path, returnType,
-					mt);
+			return new InvokedChildrenTO(method, args, path, returnType, mt);
 		} else {
-			SlingProperty sp = method.getAnnotation(SlingProperty.class);
+			final SlingProperty sp = method.getAnnotation(SlingProperty.class);
 			if (sp == null) {
 				throw new java.lang.IllegalStateException("Method "
 						+ method.getName() + " on class "
@@ -82,20 +86,20 @@ public class InvokedTOFactory {
 						+ " does not have required annotations");
 			}
 
-			String path = StringUtils.trim(sp.path());
-			String name = StringUtils.trim(sp.name());
+			final String path = StringUtils.trim(sp.path());
+			final String name = StringUtils.trim(sp.name());
 
 			String property = (path.length() > 0 ? path + "/" : path) + name;
-			if (property == null || property.length() < 1) {
+			if ((property == null) || (property.length() < 1)) {
 				property = MethodType.getBeanName(mt, method);
 				property = property.replace("_", ":");
 			}
-			if (property == null || property.length() < 1) {
-				String msg = "Could not determine Bean Property name either from @SlingProperty annotation or the JavaBean method name.";
+			if ((property == null) || (property.length() < 1)) {
+				final String msg = "Could not determine Bean Property name either from @SlingProperty annotation or the JavaBean method name.";
 				throw new IllegalStateException(msg);
 			}
 
-			return new InvokedPropertyTO(proxy, method, args, path, name, mt);
+			return new InvokedPropertyTO(method, args, path, name, mt);
 		}
 
 	}

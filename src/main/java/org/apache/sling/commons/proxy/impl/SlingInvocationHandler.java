@@ -37,6 +37,11 @@ import org.apache.sling.commons.proxy.impl.lang.JDPHashCodeImpl;
 import org.apache.sling.commons.proxy.impl.lang.MethodType;
 import org.apache.sling.commons.proxy.impl.lang.PrimeNumbers;
 import org.apache.sling.commons.proxy.impl.reflection.Annotations;
+import org.apache.sling.commons.proxy.impl.to.BaseInvokedTO;
+import org.apache.sling.commons.proxy.impl.to.InvokedChildrenTO;
+import org.apache.sling.commons.proxy.impl.to.InvokedPropertyTO;
+import org.apache.sling.commons.proxy.impl.to.InvokedTO;
+import org.apache.sling.commons.proxy.impl.to.InvokedTOFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +71,7 @@ public class SlingInvocationHandler implements InvocationHandler {
 	 * The ISlingProxyService instance, used to retrieve references and
 	 * children.
 	 */
-	private ISlingProxyService slingProxyService;
+	private final ISlingProxyService slingProxyService;
 
 	/**
 	 * Create a new ResourceInvocationHandler allowing invocation of all Methods
@@ -76,47 +81,20 @@ public class SlingInvocationHandler implements InvocationHandler {
 	 *            Resource - the
 	 * @param defaultSlingProxyServiceImpl
 	 */
-	SlingInvocationHandler(Resource r, ISlingProxyService slingProxyService) {
+	SlingInvocationHandler(final Resource r,
+			final ISlingProxyService slingProxyService) {
 		this.r = r;
 		this.slingProxyService = slingProxyService;
 		this.cache = new java.util.HashMap<String, Object>();
 	}
 
-	/*
-	 * (non-Javadoc) @see
-	 * java.lang.reflect.InvocationHandler#invoke(java.lang.Object,
-	 * java.lang.reflect.Method, java.lang.Object[])
+	/**
+	 * Get the path of the resource backing this invocation handler.
+	 * 
+	 * @return the resource path
 	 */
-	public Object invoke(Object proxy, Method method, Object[] args)
-			throws Throwable {
-
-		InvokedTO to = InvokedTOFactory.newInstance(proxy, method, args);
-		if (to.isGetter()) {
-			if (Annotations.methodHasAnnotation(method, SlingReference.class)) {
-				return (handleGetReference((BaseInvokedTO) to));
-			} else if (Annotations.methodHasAnnotation(method,
-					SlingChildren.class)) {
-				return (handleGetChildren((InvokedChildrenTO) to));
-			} else {
-				return (handleGetProperty((InvokedPropertyTO) to));
-			}
-		} else if (to.isType(MethodType.JavaBeanSet)) {
-			throw new UnsupportedOperationException(
-					"Setter methods not yet implemented.");
-		} else if (to.isType(MethodType.ToString)) {
-			return new GetMethodToStringImpl().toString(proxy);
-		} else if (to.isType(MethodType.HashCode)) {
-			return new JDPHashCodeImpl().hashCode(proxy);
-		} else if (to.isType(MethodType.Equals)) {
-			if (args == null || args.length != 1) {
-				String msg = "Method 'equals' requires exactly 1 argument.";
-				throw new IllegalArgumentException(msg);
-			}
-			return new JDPEqualsImpl().equals(proxy, args[0]);
-		} else if (to.isType(MethodType.BackingResource)) {
-			return r;
-		}
-		throw new NoSuchMethodException("Method " + method.getName() + " DNE");
+	public final String getResourcePath() {
+		return this.r.getPath();
 	}
 
 	/**
@@ -127,31 +105,76 @@ public class SlingInvocationHandler implements InvocationHandler {
 	 * @return the returned object
 	 */
 	@SuppressWarnings("unchecked")
-	private Object handleGetChildren(InvokedChildrenTO to) {
+	private Object handleGetChildren(final InvokedChildrenTO to) {
 		log.trace("handleGetChildren");
 
-		Resource resource = r;
-		if (!StringUtils.isEmpty(to.path)) {
-			log.debug("Loading child resources from: {}", to.path);
+		Resource resource = this.r;
+		if (!StringUtils.isEmpty(to.getPath())) {
+			log.debug("Loading child resources from: {}", to.getPath());
 			if (to.isAbsolute()) {
-				resource = r.getResourceResolver().getResource(to.path);
+				resource = this.r.getResourceResolver().getResource(
+						to.getPath());
 			} else {
-				resource = r.getResourceResolver().getResource(r, to.path);
+				resource = this.r.getResourceResolver().getResource(this.r,
+						to.getPath());
 			}
 		}
 
 		Class<?> returnType = Resource.class;
-		if (to.returnType != null) {
-			returnType = to.returnType;
+		if (to.getReturnType() != null) {
+			returnType = to.getReturnType();
 		}
 
 		Iterator<?> toReturn = Collections.EMPTY_LIST.iterator();
 		if (resource != null) {
 			toReturn = new DeferredIterator<Object>(resource
 					.getResourceResolver().listChildren(resource),
-					(Class<Object>) returnType, slingProxyService);
+					(Class<Object>) returnType, this.slingProxyService);
 		}
 		return toReturn;
+	}
+
+	/**
+	 * Handles get requests against a proxy to a Sling Resource.
+	 * 
+	 * @param to
+	 *            the DTO for the invocation
+	 * @return the result of the get access
+	 * @throws Throwable
+	 */
+	private Object handleGetProperty(final InvokedPropertyTO to)
+			throws Throwable {
+		Object objReturn;
+
+		// handle properties
+		if (this.cache.containsKey(to.getPropertyName())) {
+			objReturn = this.cache.get(to.getPropertyName());
+		} else {
+			// TODO: refactor to also cache the ValueMap for a given path maybe?
+			ValueMap vm;
+			if (to.getPath() == null) {
+				vm = this.r.adaptTo(ValueMap.class);
+			} else {
+				Resource rsrc;
+				if (StringUtils.isEmpty(to.getPath())) {
+					rsrc = this.r;
+				} else if (to.isAbsolute()) {
+					rsrc = this.r.getResourceResolver().getResource(
+							to.getPath());
+				} else {
+					rsrc = this.r.getResourceResolver().getResource(this.r,
+							to.getPath());
+				}
+				if (rsrc == null) {
+					throw new ResourceNotFoundException(
+							"Unable to load resource at path: " + to.getPath());
+				}
+				vm = rsrc.adaptTo(ValueMap.class);
+			}
+			objReturn = vm.get(to.getName(), to.getMethod().getReturnType());
+			this.cache.put(to.getPropertyName(), objReturn);
+		}
+		return objReturn;
 	}
 
 	/**
@@ -161,36 +184,38 @@ public class SlingInvocationHandler implements InvocationHandler {
 	 *            the method invocation transfer object
 	 * @return the resulting object
 	 */
-	private Object handleGetReference(BaseInvokedTO to) {
+	private Object handleGetReference(final BaseInvokedTO to) {
 		log.trace("handleGetReference");
 
-		log.debug("Referencing resource at path: {}", to.path);
+		log.debug("Referencing resource at path: {}", to.getPath());
 		Resource reference = null;
-		if(to.path.startsWith("/")){
-			reference = r.getResourceResolver().getResource(to.path);
-		}else{
-			reference = r.getResourceResolver().getResource(r, to.path);
+		if (to.getPath().startsWith("/")) {
+			reference = this.r.getResourceResolver().getResource(to.getPath());
+		} else {
+			reference = this.r.getResourceResolver().getResource(this.r,
+					to.getPath());
 		}
 		log.debug("Loaded resource: {}", reference);
 
 		if (reference != null) {
-			if (Resource.class.equals(to.method.getReturnType())) {
+			if (Resource.class.equals(to.getMethod().getReturnType())) {
 				log.debug("Returning resource as reference");
 				return reference;
 			}
 
-			Object adapted = reference.adaptTo(to.method.getReturnType());
+			final Object adapted = reference.adaptTo(to.getMethod()
+					.getReturnType());
 			if (adapted != null) {
 				log.debug("Returning adapted object as reference");
 				return adapted;
 			}
 
 			try {
-				Object proxy = slingProxyService.getProxy(reference,
-						to.method.getReturnType());
+				final Object proxy = this.slingProxyService.getProxy(reference,
+						to.getMethod().getReturnType());
 				log.debug("Returning proxy as reference");
 				return proxy;
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				log.warn("Exception getting proxy, null reference will be returned");
 			}
 		} else {
@@ -207,57 +232,45 @@ public class SlingInvocationHandler implements InvocationHandler {
 	 */
 	@Override
 	public int hashCode() {
-		int hashCode = SlingInvocationHandler.class.hashCode()
-				* PrimeNumbers.getInstance().get(2) + r.getPath().hashCode();
+		final int hashCode = (SlingInvocationHandler.class.hashCode() * PrimeNumbers
+				.getInstance().get(2)) + this.r.getPath().hashCode();
 		return hashCode;
 	}
 
-	/**
-	 * Get the path of the resource backing this invocation handler.
-	 * 
-	 * @return the resource path
+	/*
+	 * (non-Javadoc) @see
+	 * java.lang.reflect.InvocationHandler#invoke(java.lang.Object,
+	 * java.lang.reflect.Method, java.lang.Object[])
 	 */
-	public final String getResourcePath() {
-		return r.getPath();
-	}
+	public Object invoke(final Object proxy, final Method method,
+			final Object[] args) throws Throwable {
 
-	/**
-	 * Handles get requests against a proxy to a Sling Resource.
-	 * 
-	 * @param to
-	 *            the DTO for the invocation
-	 * @return the result of the get access
-	 * @throws Throwable
-	 */
-	private Object handleGetProperty(InvokedPropertyTO to) throws Throwable {
-		Object objReturn;
-
-		// handle properties
-		if (cache.containsKey(to.propertyName)) {
-			objReturn = cache.get(to.propertyName);
-		} else {
-			// TODO: refactor to also cache the ValueMap for a given path maybe?
-			ValueMap vm;
-			if (to.path == null) {
-				vm = r.adaptTo(ValueMap.class);
+		final InvokedTO to = InvokedTOFactory.newInstance(proxy, method, args);
+		if (to.isGetter()) {
+			if (Annotations.methodHasAnnotation(method, SlingReference.class)) {
+				return (this.handleGetReference((BaseInvokedTO) to));
+			} else if (Annotations.methodHasAnnotation(method,
+					SlingChildren.class)) {
+				return (this.handleGetChildren((InvokedChildrenTO) to));
 			} else {
-				Resource rsrc;
-				if(StringUtils.isEmpty(to.path)){
-					rsrc = r;
-				}else if (to.isAbsolute()) {
-					rsrc = r.getResourceResolver().getResource(to.path);
-				} else {
-					rsrc = r.getResourceResolver().getResource(r, to.path);
-				}
-				if (rsrc == null) {
-					throw new ResourceNotFoundException(
-							"Unable to load resource at path: " + to.path);
-				}
-				vm = rsrc.adaptTo(ValueMap.class);
+				return (this.handleGetProperty((InvokedPropertyTO) to));
 			}
-			objReturn = vm.get(to.name, to.method.getReturnType());
-			cache.put(to.propertyName, objReturn);
+		} else if (to.isType(MethodType.JavaBeanSet)) {
+			throw new UnsupportedOperationException(
+					"Setter methods not yet implemented.");
+		} else if (to.isType(MethodType.ToString)) {
+			return new GetMethodToStringImpl().toString(proxy);
+		} else if (to.isType(MethodType.HashCode)) {
+			return new JDPHashCodeImpl().hashCode(proxy);
+		} else if (to.isType(MethodType.Equals)) {
+			if ((args == null) || (args.length != 1)) {
+				final String msg = "Method 'equals' requires exactly 1 argument.";
+				throw new IllegalArgumentException(msg);
+			}
+			return new JDPEqualsImpl().equals(proxy, args[0]);
+		} else if (to.isType(MethodType.BackingResource)) {
+			return this.r;
 		}
-		return objReturn;
+		throw new NoSuchMethodException("Method " + method.getName() + " DNE");
 	}
 }

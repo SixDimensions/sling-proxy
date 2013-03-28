@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy.impl;
+package org.apache.sling.commons.proxy.impl.to;
 
 import java.lang.reflect.Method;
 
@@ -25,9 +25,12 @@ import org.apache.sling.commons.proxy.impl.lang.MethodType;
 /**
  * Transfer object for SlingChildren method invocations.
  */
-public class InvokedChildrenTO extends BaseInvokedTO {
+public final class InvokedChildrenTO extends BaseInvokedTO {
 
-	final Class<?> returnType;
+	/**
+	 * The generic type to return when constructing the Iterator of children.
+	 */
+	private final Class<?> returnType;
 
 	/**
 	 * Constructs a new Invoked Children Transfer Object.
@@ -39,16 +42,26 @@ public class InvokedChildrenTO extends BaseInvokedTO {
 	 * @param args
 	 *            the method arguments
 	 * @param path
-	 *            the path
+	 *            the path specified in the annotation
 	 * @param returnType
-	 *            the return type
+	 *            the return type specified in the annotation
 	 * @param mt
 	 *            the method type
 	 */
-	protected InvokedChildrenTO(Object proxy, Method method, Object[] args,
-			String path, Class<?> returnType, MethodType mt) {
-		super(proxy, method, args, path, mt);
+	protected InvokedChildrenTO(final Method method, final Object[] args,
+			final String path, final Class<?> returnType, final MethodType mt) {
+		super(method, path, mt);
 		this.returnType = returnType;
+	}
+
+	/**
+	 * Gets the generic type to return when constructing the Iterator of
+	 * children.
+	 * 
+	 * @return the returnType
+	 */
+	public final Class<?> getReturnType() {
+		return this.returnType;
 	}
 
 }

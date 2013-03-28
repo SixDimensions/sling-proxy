@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.commons.proxy.impl;
+package org.apache.sling.commons.proxy.impl.to;
 
 import org.apache.sling.commons.proxy.impl.lang.MethodType;
 
@@ -26,7 +26,7 @@ import org.apache.sling.commons.proxy.impl.lang.MethodType;
 public interface InvokedTO {
 
 	public static final InvokedTO UNKNOWN = new InvokedPropertyTO(null, null,
-			null, null, null, MethodType.Unknown);
+			null, null, MethodType.Unknown);
 
 	/**
 	 * Determines if the item represented by this method Invocation is an
