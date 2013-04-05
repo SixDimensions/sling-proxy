@@ -24,18 +24,18 @@ import java.lang.reflect.Proxy;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.commons.proxy.ISlingProxyService;
+import org.apache.sling.commons.proxy.SlingProxyService;
 import org.apache.sling.commons.proxy.annotations.SlingChildren;
 import org.apache.sling.commons.proxy.annotations.SlingProperty;
 import org.apache.sling.commons.proxy.annotations.SlingReference;
 import org.apache.sling.commons.proxy.impl.reflection.Annotations;
 
 /**
- * Default implementation of the {@link org.apache.sling.commons.proxy.ISlingProxyService}
+ * Default implementation of the {@link org.apache.sling.commons.proxy.SlingProxyService}
  */
-@Service(value = ISlingProxyService.class)
+@Service(value = SlingProxyService.class)
 @Component(description = "Creates ISlingProxy instances", immediate = true)
-public final class DefaultSlingProxyServiceImpl implements ISlingProxyService {
+public final class DefaultSlingProxyServiceImpl implements SlingProxyService {
 
 	/**
 	 * Checks to see if an instance of the specified <code>type</code> can be
@@ -75,7 +75,7 @@ public final class DefaultSlingProxyServiceImpl implements ISlingProxyService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.apache.sling.commons.proxy.ISlingProxyService#getProxy(org.apache
+	 * org.apache.sling.commons.proxy.SlingProxyService#getProxy(org.apache
 	 * .sling.api.resource.Resource, java.lang.Class)
 	 */
 	public <AdapterType> AdapterType getProxy(Resource resource,

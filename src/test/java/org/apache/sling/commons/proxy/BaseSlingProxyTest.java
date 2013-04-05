@@ -35,7 +35,7 @@ public class BaseSlingProxyTest {
 	private final static Logger log = LoggerFactory
 			.getLogger(TestSlingPropertyProxy.class);
 	protected final MockResourceResolver resolver = new MockResourceResolver();
-	protected final ISlingProxyService slingProxyService = new DefaultSlingProxyServiceImpl();
+	protected final SlingProxyService slingProxyService = new DefaultSlingProxyServiceImpl();
 
 	/**
 	 * Sets up the Sling mock objects
@@ -50,7 +50,7 @@ public class BaseSlingProxyTest {
 		final MockResource pageResource = new MockResource(resolver,
 				"/content/test", PAGE_RESOURCE_TYPE) {
 			public <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
-				if (ISlingProxy.class.isAssignableFrom(type)) {
+				if (SlingProxy.class.isAssignableFrom(type)) {
 					return slingProxyService.getProxy(this, type);
 				} else {
 					return super.adaptTo(type);
@@ -62,7 +62,7 @@ public class BaseSlingProxyTest {
 		final MockResource contentResource = new MockResource(resolver,
 				"/content/test/jcr:content", CONTENT_RESOURCE_TYPE) {
 			public <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
-				if (ISlingProxy.class.isAssignableFrom(type)) {
+				if (SlingProxy.class.isAssignableFrom(type)) {
 					return slingProxyService.getProxy(this, type);
 				} else {
 					return super.adaptTo(type);

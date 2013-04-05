@@ -21,7 +21,7 @@ package org.apache.sling.commons.proxy.impl;
 import java.util.Iterator;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.commons.proxy.ISlingProxyService;
+import org.apache.sling.commons.proxy.SlingProxyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ final class DeferredIterator<E> implements Iterator<E> {
 	 * A reference to the Sling Proxy service, used to load items which are
 	 * SlingProxies
 	 */
-	private final ISlingProxyService slingProxyService;
+	private final SlingProxyService slingProxyService;
 
 	/**
 	 * Instantiates a Deferred Iterator.
@@ -69,7 +69,7 @@ final class DeferredIterator<E> implements Iterator<E> {
 	 */
 	public DeferredIterator(final Iterator<Resource> backingResources,
 			final Class<E> returnType,
-			final ISlingProxyService slingProxyService) {
+			final SlingProxyService slingProxyService) {
 		this.backingResources = backingResources;
 		this.returnType = returnType;
 		this.slingProxyService = slingProxyService;

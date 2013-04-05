@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.proxy.BaseSlingProxyTest;
-import org.apache.sling.commons.proxy.ISlingProxyService;
+import org.apache.sling.commons.proxy.SlingProxyService;
 import org.apache.sling.commons.proxy.impl.DefaultSlingProxyServiceImpl;
 import org.apache.sling.commons.proxy.samples.DuplicateSlingPropertyProxy;
 import org.apache.sling.commons.proxy.samples.SlingPropertyProxy;
@@ -64,7 +64,7 @@ public class TestJDPEquals extends BaseSlingProxyTest {
 
 
 		log.info("Ensuring retrieving the same proxy from different proxy services are equal");
-		ISlingProxyService slingProxyService2 = new DefaultSlingProxyServiceImpl();
+		SlingProxyService slingProxyService2 = new DefaultSlingProxyServiceImpl();
 		SlingPropertyProxy pageProxy4 = slingProxyService2.getProxy(
 				pageResource, SlingPropertyProxy.class);
 		assertTrue(pageProxy.equals(pageProxy4));

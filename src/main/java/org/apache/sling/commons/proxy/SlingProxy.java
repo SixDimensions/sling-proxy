@@ -24,7 +24,7 @@ import org.apache.sling.api.resource.Resource;
  * An interface allowing developers to create interfaces who's method calls are
  * proxies from the Sling repository.
  */
-public interface ISlingProxy {
+public interface SlingProxy {
 
 	/**
 	 * Retrieves the backing resource for this Sling Proxy.

@@ -28,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceNotFoundException;
 import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.commons.proxy.ISlingProxyService;
+import org.apache.sling.commons.proxy.SlingProxyService;
 import org.apache.sling.commons.proxy.annotations.SlingChildren;
 import org.apache.sling.commons.proxy.annotations.SlingReference;
 import org.apache.sling.commons.proxy.impl.lang.GetMethodToStringImpl;
@@ -68,10 +68,10 @@ public class SlingInvocationHandler implements InvocationHandler {
 	private final Map<String, Object> cache;
 
 	/**
-	 * The ISlingProxyService instance, used to retrieve references and
+	 * The SlingProxyService instance, used to retrieve references and
 	 * children.
 	 */
-	private final ISlingProxyService slingProxyService;
+	private final SlingProxyService slingProxyService;
 
 	/**
 	 * Create a new ResourceInvocationHandler allowing invocation of all Methods
@@ -82,7 +82,7 @@ public class SlingInvocationHandler implements InvocationHandler {
 	 * @param defaultSlingProxyServiceImpl
 	 */
 	SlingInvocationHandler(final Resource r,
-			final ISlingProxyService slingProxyService) {
+			final SlingProxyService slingProxyService) {
 		this.r = r;
 		this.slingProxyService = slingProxyService;
 		this.cache = new java.util.HashMap<String, Object>();

@@ -18,14 +18,14 @@
  */
 package org.apache.sling.commons.proxy.samples;
 
-import org.apache.sling.commons.proxy.ISlingProxy;
+import org.apache.sling.commons.proxy.SlingProxy;
 import org.apache.sling.commons.proxy.annotations.SlingProperty;
 
 /**
  * Duplicate of the SlingPropertyProxy class. This is used to see if really
  * similar proxies are treated as different.
  */
-public interface DuplicateSlingPropertyProxy extends ISlingProxy {
+public interface DuplicateSlingPropertyProxy extends SlingProxy {
 
 	@SlingProperty(name = "jcr:title", path = "jcr:content")
 	public String getTitle();

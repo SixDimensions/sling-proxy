@@ -18,13 +18,13 @@
  */
 package org.apache.sling.commons.proxy.samples;
 
-import org.apache.sling.commons.proxy.ISlingProxy;
+import org.apache.sling.commons.proxy.SlingProxy;
 import org.apache.sling.commons.proxy.annotations.SlingProperty;
 
 /**
  * A simple proxy with only properties.
  */
-public interface SlingPropertyProxy extends ISlingProxy {
+public interface SlingPropertyProxy extends SlingProxy {
 
 	@SlingProperty(name = "jcr:title", path = "jcr:content")
 	public String getTitle();

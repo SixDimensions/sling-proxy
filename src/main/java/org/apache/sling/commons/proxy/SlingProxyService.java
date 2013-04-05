@@ -23,7 +23,7 @@ import org.apache.sling.api.resource.Resource;
 /**
  * Service for retrieving ISlingProxy instances from Sling Resources.
  */
-public interface ISlingProxyService {
+public interface SlingProxyService {
 
 	/**
 	 * Creates new ISlingProxy instances of the provided type <code>type</code>

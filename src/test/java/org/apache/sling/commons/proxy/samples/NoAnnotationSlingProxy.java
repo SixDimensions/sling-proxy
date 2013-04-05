@@ -18,13 +18,13 @@
  */
 package org.apache.sling.commons.proxy.samples;
 
-import org.apache.sling.commons.proxy.ISlingProxy;
+import org.apache.sling.commons.proxy.SlingProxy;
 
 /**
  * A simple proxy interface for testing the SlingProxy API. This proxy interface
  * only utilizes the default property retrieval mechanism.
  */
-public interface NoAnnotationSlingProxy extends ISlingProxy {
+public interface NoAnnotationSlingProxy extends SlingProxy {
     
 	/**
 	 * Gets the jcr:title attribute

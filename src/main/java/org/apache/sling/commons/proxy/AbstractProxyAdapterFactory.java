@@ -47,7 +47,7 @@ public class AbstractProxyAdapterFactory implements AdapterFactory {
 	 * Reference to the Sling Proxy Service.
 	 */
 	@Reference
-	private ISlingProxyService slingProxyService;
+	private SlingProxyService slingProxyService;
 
 	/*
 	 * (non-Javadoc)
