@@ -27,15 +27,15 @@ import org.apache.sling.commons.proxy.annotations.SlingProperty;
  */
 public interface DuplicateSlingPropertyProxy extends SlingProxy {
 
-	@SlingProperty(name = "jcr:title", path = "jcr:content")
-	public String getTitle();
+	@SlingProperty(path = "jcr:content")
+	public String getNonExistentProperty();
 
 	@SlingProperty(name = "sling:resourceType")
 	public String getSlingResourceType();
 
+	@SlingProperty(name = "jcr:title", path = "jcr:content")
+	public String getTitle();
+
 	@SlingProperty(path = "jcr:content", name = "active")
 	public Boolean isActive();
-
-	@SlingProperty(path = "jcr:content")
-	public String getNonExistentProperty();
 }

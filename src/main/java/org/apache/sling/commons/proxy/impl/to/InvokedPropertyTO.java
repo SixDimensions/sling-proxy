@@ -20,6 +20,7 @@ package org.apache.sling.commons.proxy.impl.to;
 
 import java.lang.reflect.Method;
 
+import org.apache.sling.commons.proxy.annotations.SlingProperty;
 import org.apache.sling.commons.proxy.impl.lang.MethodType;
 
 /**
@@ -29,22 +30,41 @@ import org.apache.sling.commons.proxy.impl.lang.MethodType;
  */
 public final class InvokedPropertyTO extends BaseInvokedTO {
 
-	/**
-	 * The property name specified in the annotation
-	 */
+	/** The default bytes. */
+	private final byte[] defaultBytes;
+
+	/** The default date. */
+	private final long defaultDate;
+
+	/** The default double. */
+	private final double defaultDouble;
+
+	/** The default long. */
+	private final long defaultLong;
+
+	/** The default string. */
+	private final String defaultString;
+
+	/** The default strings. */
+	private final String[] defaultStrings;
+
+	/** The property name specified in the annotation. */
 	private final String name;
 
 	/**
 	 * The full property name, calculated from the path and name from the
-	 * annotation parameters
+	 * annotation parameters.
 	 */
 	private final String propertyName;
+
+	/** The use default flag. */
+	private final boolean useDefault;
+
+	private final boolean defaultBoolean;
 
 	/**
 	 * Constructs a new Invoked Transfer Object.
 	 * 
-	 * @param proxy
-	 *            the proxy instance on which the method was invoked
 	 * @param method
 	 *            the invoked method
 	 * @param args
@@ -61,6 +81,75 @@ public final class InvokedPropertyTO extends BaseInvokedTO {
 		super(method, path, mt);
 		this.name = name;
 		this.propertyName = (path != null ? path + "/" : "") + name;
+
+		final SlingProperty sp = method.getAnnotation(SlingProperty.class);
+		this.defaultBoolean = sp.defaultBoolean();
+		this.defaultBytes = sp.defaultBytes();
+		this.defaultDate = sp.defaultDate();
+		this.defaultDouble = sp.defaultDouble();
+		this.defaultLong = sp.defaultLong();
+		this.defaultString = sp.defaultString();
+		this.defaultStrings = sp.defaultStrings();
+		this.useDefault = sp.useDefault();
+
+	}
+
+	public boolean getDefaultBoolean() {
+		return this.defaultBoolean;
+	}
+
+	/**
+	 * Gets the default bytes.
+	 * 
+	 * @return the default bytes
+	 */
+	public byte[] getDefaultBytes() {
+		return this.defaultBytes;
+	}
+
+	/**
+	 * Gets the default date.
+	 * 
+	 * @return the default date
+	 */
+	public long getDefaultDate() {
+		return this.defaultDate;
+	}
+
+	/**
+	 * Gets the default double.
+	 * 
+	 * @return the default double
+	 */
+	public double getDefaultDouble() {
+		return this.defaultDouble;
+	}
+
+	/**
+	 * Gets the default long.
+	 * 
+	 * @return the default long
+	 */
+	public long getDefaultLong() {
+		return this.defaultLong;
+	}
+
+	/**
+	 * Gets the default string.
+	 * 
+	 * @return the default string
+	 */
+	public String getDefaultString() {
+		return this.defaultString;
+	}
+
+	/**
+	 * Gets the default strings.
+	 * 
+	 * @return the default strings
+	 */
+	public String[] getDefaultStrings() {
+		return this.defaultStrings;
 	}
 
 	/**
@@ -80,5 +169,14 @@ public final class InvokedPropertyTO extends BaseInvokedTO {
 	 */
 	public String getPropertyName() {
 		return this.propertyName;
+	}
+
+	/**
+	 * Checks if is use default.
+	 * 
+	 * @return true, if is use default
+	 */
+	public boolean isUseDefault() {
+		return this.useDefault;
 	}
 }

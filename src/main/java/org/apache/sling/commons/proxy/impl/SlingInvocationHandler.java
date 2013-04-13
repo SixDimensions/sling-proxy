@@ -20,7 +20,9 @@ package org.apache.sling.commons.proxy.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -68,8 +70,7 @@ public class SlingInvocationHandler implements InvocationHandler {
 	private final Map<String, Object> cache;
 
 	/**
-	 * The SlingProxyService instance, used to retrieve references and
-	 * children.
+	 * The SlingProxyService instance, used to retrieve references and children.
 	 */
 	private final SlingProxyService slingProxyService;
 
@@ -171,7 +172,40 @@ public class SlingInvocationHandler implements InvocationHandler {
 				}
 				vm = rsrc.adaptTo(ValueMap.class);
 			}
-			objReturn = vm.get(to.getName(), to.getMethod().getReturnType());
+
+			if (to.isUseDefault()) {
+				if (to.getMethod().getReturnType().equals(Boolean.class)) {
+					objReturn = vm.get(to.getName(), to.getDefaultBoolean());
+				} else if (to.getMethod().getReturnType().equals(Byte[].class)) {
+					objReturn = vm.get(to.getName(), to.getDefaultBytes());
+				} else if (to.getMethod().getReturnType()
+						.equals(Calendar.class)) {
+					final Calendar c = Calendar.getInstance();
+					c.setTimeInMillis(to.getDefaultLong());
+					objReturn = vm.get(to.getName(), c);
+				} else if (to.getMethod().getReturnType().equals(Date.class)) {
+					objReturn = vm.get(to.getName(),
+							new Date(to.getDefaultDate()));
+				} else if (to.getMethod().getReturnType().equals(Double.class)) {
+					objReturn = vm.get(to.getName(), to.getDefaultDouble());
+				} else if (to.getMethod().getReturnType().equals(Long.class)) {
+					objReturn = vm.get(to.getName(), to.getDefaultLong());
+				} else if (to.getMethod().getReturnType().equals(String.class)) {
+					objReturn = vm.get(to.getName(), to.getDefaultString());
+				} else if (to.getMethod().getReturnType()
+						.equals(String[].class)) {
+					objReturn = vm.get(to.getName(), to.getDefaultStrings());
+				} else {
+					log.warn(
+							"Unmappable return type {} specified and default requested",
+							to.getMethod().getReturnType());
+					objReturn = vm.get(to.getName(), to.getMethod()
+							.getReturnType());
+				}
+			} else {
+				objReturn = vm
+						.get(to.getName(), to.getMethod().getReturnType());
+			}
 			this.cache.put(to.getPropertyName(), objReturn);
 		}
 		return objReturn;
