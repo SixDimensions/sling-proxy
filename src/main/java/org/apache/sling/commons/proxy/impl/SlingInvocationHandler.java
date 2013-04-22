@@ -18,6 +18,8 @@
  */
 package org.apache.sling.commons.proxy.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Calendar;
@@ -178,6 +180,11 @@ public class SlingInvocationHandler implements InvocationHandler {
 					objReturn = vm.get(to.getName(), to.getDefaultBoolean());
 				} else if (to.getMethod().getReturnType().equals(Byte[].class)) {
 					objReturn = vm.get(to.getName(), to.getDefaultBytes());
+				} else if (to.getMethod().getReturnType()
+						.equals(InputStream.class)) {
+					final InputStream defaultIs = new ByteArrayInputStream(
+							to.getDefaultBytes());
+					objReturn = vm.get(to.getName(), defaultIs);
 				} else if (to.getMethod().getReturnType()
 						.equals(Calendar.class)) {
 					final Calendar c = Calendar.getInstance();

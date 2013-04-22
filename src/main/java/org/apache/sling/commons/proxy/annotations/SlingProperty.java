@@ -78,7 +78,8 @@ public @interface SlingProperty {
 	boolean defaultBoolean() default false;
 
 	/**
-	 * The default byte array, used to provide a default for binary data.
+	 * The default byte array, used to provide a default when the method returns
+	 * an InputStream or a byte array.
 	 * 
 	 * @return the default bytes
 	 */
