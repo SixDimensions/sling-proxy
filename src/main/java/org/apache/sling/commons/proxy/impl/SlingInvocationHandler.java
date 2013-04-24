@@ -228,6 +228,7 @@ public class SlingInvocationHandler implements InvocationHandler {
 	private Object handleGetReference(final BaseInvokedTO to) {
 		log.trace("handleGetReference");
 
+		Object value = null;
 		log.debug("Referencing resource at path: {}", to.getPath());
 		Resource reference = null;
 		if (to.getPath().startsWith("/")) {
@@ -239,31 +240,39 @@ public class SlingInvocationHandler implements InvocationHandler {
 		log.debug("Loaded resource: {}", reference);
 
 		if (reference != null) {
-			if (Resource.class.equals(to.getMethod().getReturnType())) {
+			final Class<?> returnType = to.getMethod().getReturnType();
+
+			log.debug("Attempting to get instance of {}",
+					returnType.getCanonicalName());
+			if (Resource.class.equals(returnType)) {
 				log.debug("Returning resource as reference");
-				return reference;
+				value = reference;
 			}
 
-			final Object adapted = reference.adaptTo(to.getMethod()
-					.getReturnType());
-			if (adapted != null) {
-				log.debug("Returning adapted object as reference");
-				return adapted;
+			if (value == null) {
+				value = reference.adaptTo(returnType);
+				if (value != null) {
+					log.debug("Returning adapted object as reference");
+				}
 			}
 
-			try {
-				final Object proxy = this.slingProxyService.getProxy(reference,
-						to.getMethod().getReturnType());
-				log.debug("Returning proxy as reference");
-				return proxy;
-			} catch (final Exception e) {
-				log.warn("Exception getting proxy, null reference will be returned");
+			if (value == null) {
+				try {
+					value = this.slingProxyService.getProxy(reference,
+							returnType);
+					if (value != null) {
+						log.debug("Returning adapted object as reference");
+					}
+				} catch (final Exception e) {
+					log.warn("Exception getting proxy, null reference will be returned");
+				}
 			}
 		} else {
 			log.debug("Referenced resource is null");
 		}
+		log.debug("Returning value: {}", value);
 
-		return null;
+		return value;
 	}
 
 	/*

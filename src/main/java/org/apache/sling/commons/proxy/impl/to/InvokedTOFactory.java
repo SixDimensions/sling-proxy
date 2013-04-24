@@ -26,20 +26,12 @@ import org.apache.sling.commons.proxy.annotations.SlingProperty;
 import org.apache.sling.commons.proxy.annotations.SlingReference;
 import org.apache.sling.commons.proxy.impl.lang.MethodType;
 import org.apache.sling.commons.proxy.impl.reflection.Annotations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Generates instances of InvokedTO's, based on the annotations available on the
  * method, this will return the correct transfer object type.
  */
 public class InvokedTOFactory {
-
-	/**
-	 * The SLF4J Logger.
-	 */
-	private static final Logger log = LoggerFactory
-			.getLogger(InvokedTOFactory.class);
 
 	/**
 	 * Instantiates a new InvokedTO Object. This object will contain the
@@ -55,7 +47,6 @@ public class InvokedTOFactory {
 	 */
 	public static InvokedTO newInstance(final Object proxy,
 			final Method method, final Object[] args) {
-		log.trace("newInstance");
 
 		final MethodType mt = MethodType.getMethodType(method);
 		if (mt.equals(MethodType.BackingResource)
