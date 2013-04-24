@@ -35,8 +35,6 @@ public final class InvokedChildrenTO extends BaseInvokedTO {
 	/**
 	 * Constructs a new Invoked Children Transfer Object.
 	 * 
-	 * @param proxy
-	 *            the proxy object
 	 * @param method
 	 *            the invoked method
 	 * @param args
