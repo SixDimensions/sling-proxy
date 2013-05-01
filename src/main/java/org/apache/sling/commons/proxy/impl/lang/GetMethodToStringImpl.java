@@ -33,23 +33,27 @@ public final class GetMethodToStringImpl {
 	private final JDPToStringImpl tostring = new JDPToStringImpl();
 
 	/**
-	 * Generates a String representation of an object.
+	 * Adding the interface information to the string representation.
 	 * 
 	 * @param obj
-	 *            the object to generate a string of
-	 * @return the string representation
+	 *            the object from which to cull the interfaces
+	 * @param sb
+	 *            the string builder to hold the string representation
 	 */
-	public String toString(Object obj) {
-		StringBuilder sb = new StringBuilder();
+	private void addInterfaceInfo(final Object obj, final StringBuilder sb) {
+		final Class<?>[] cla = obj.getClass().getInterfaces();
+		sb.append(obj.getClass().getName());
+		sb.append(", Proxy Of: [");
 
-		if (obj != null) {
-			addInterfaceInfo(obj, sb);
-			addMethodReturnValues(obj, Methods.getterMethods(obj), sb);
-		} else {
-			sb.append("null");
+		final int max = (cla != null ? cla.length : -1);
+		for (int ndx = 0; ndx < max; ndx++) {
+			sb.append(cla[ndx].getName());
+			if ((ndx + 1) < max) {
+				sb.append(" , ");
+			}
 		}
 
-		return sb.toString();
+		sb.append("]");
 	}
 
 	/**
@@ -62,47 +66,48 @@ public final class GetMethodToStringImpl {
 	 * @param sb
 	 *            the string builder to hold the string results
 	 */
-	private void addMethodReturnValues(Object obj, List<Method> list,
-			StringBuilder sb) {
-		sb.append("Get Method Values:");
+	private void addMethodReturnValues(final Object obj,
+			final List<Method> list, final StringBuilder sb) {
+		sb.append(", Values: {");
 
-		if (list != null && list.size() > 0) {
-			for (Method m : list) {
-				sb.append("\n\t").append(m.getName()).append(" = ");
+		if ((list != null) && (list.size() > 0)) {
+			for (int i = 0; i < list.size(); i++) {
+				final Method m = list.get(i);
+				sb.append(m.getName()).append(": ");
 				try {
-					Object rtnObj = m.invoke(obj, (Object[]) null);
-					sb.append("{").append(tostring.toString(rtnObj))
-							.append("}");
-				} catch (Exception ex) {
+					final Object rtnObj = m.invoke(obj, (Object[]) null);
+					sb.append(this.tostring.toString(rtnObj));
+					if (i < (list.size() - 1)) {
+						sb.append(", ");
+					}
+				} catch (final Exception ex) {
 					sb.append("caused ").append(ex.getClass().getName())
 							.append(" - Message = ").append(ex.getMessage());
 				}
 			}
+
 		}
 
-		sb.append("\n\n");
+		sb.append("}");
 	}
 
 	/**
-	 * Adding the interface information to the string representation.
+	 * Generates a String representation of an object.
 	 * 
 	 * @param obj
-	 *            the object from which to cull the interfaces
-	 * @param sb
-	 *            the string builder to hold the string representation
+	 *            the object to generate a string of
+	 * @return the string representation
 	 */
-	private void addInterfaceInfo(Object obj, StringBuilder sb) {
-		Class<?>[] cla = obj.getClass().getInterfaces();
-		sb.append("Implements: [");
+	public String toString(final Object obj) {
+		final StringBuilder sb = new StringBuilder();
 
-		int max = (cla != null ? cla.length : -1);
-		for (int ndx = 0; ndx < max; ndx++) {
-			sb.append(cla[ndx].getName());
-			if (ndx + 1 < max) {
-				sb.append(" , ");
-			}
+		if (obj != null) {
+			this.addInterfaceInfo(obj, sb);
+			this.addMethodReturnValues(obj, Methods.getterMethods(obj), sb);
+		} else {
+			sb.append("null");
 		}
 
-		sb.append("]\n");
+		return sb.toString();
 	}
 }
